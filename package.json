@@ -1,0 +1,48 @@
+{
+  "name": "job-finder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/apps/telegram-bot/index.js",
+    "biome:fix": "biome format --write",
+    "biome:check": "biome check",
+    "test": "jest --testPathPatterns=\"\\.spec\\.ts$\"",
+    "format:lint": "pnpm biome:fix && pnpm biome:check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sqlite3",
+      "msgpackr-extract",
+      "unrs-resolver"
+    ]
+  },
+  "packageManager": "pnpm@10.29.3",
+  "devDependencies": {
+    "@biomejs/biome": "2.3.14",
+    "@types/express": "^5.0.6",
+    "@types/jest": "29.5.14",
+    "@types/node": "^25.2.3",
+    "@types/node-telegram-bot-api": "^0.64.13",
+    "jest": "29.7.0",
+    "ts-jest": "29.4.6",
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "awilix": "^13.0.0",
+    "bullmq": "^5.69.2",
+    "express": "^5.2.1",
+    "node-telegram-bot-api": "^0.67.0",
+    "openai": "^6.22.0",
+    "pino": "^10.3.1",
+    "playwright": "^1.58.2",
+    "sqlite3": "^5.1.7",
+    "typeorm": "0.3.28",
+    "uuid": "13.0.0",
+    "zod": "^4.3.6"
+  }
+}
