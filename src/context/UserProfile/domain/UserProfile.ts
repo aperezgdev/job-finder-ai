@@ -50,10 +50,10 @@ export class UserProfile {
 			new UserProfileTargetSeniorities(primitives.targetSeniorities),
 			new UserProfileTargetLocations(primitives.targetLocations),
 			new UserProfileSkills(primitives.skills),
-			primitives.minSalary !== undefined
+			primitives.minSalary != null
 				? new UserProfileMinSalary(primitives.minSalary)
 				: undefined,
-			primitives.profileComment !== undefined
+			primitives.profileComment != null
 				? new UserProfileComment(primitives.profileComment)
 				: undefined,
 		);

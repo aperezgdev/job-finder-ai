@@ -20,8 +20,8 @@ export class SQLiteUserProfileRepository
 			targetSeniorities: entity.targetSeniorities,
 			targetLocations: entity.targetLocations,
 			skills: entity.skills,
-			minSalary: entity.minSalary,
-			profileComment: entity.profileComment,
+			minSalary: entity.minSalary ?? undefined,
+			profileComment: entity.profileComment ?? undefined,
 		});
 	}
 
