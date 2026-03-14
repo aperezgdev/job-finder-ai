@@ -19,7 +19,7 @@ import { HelpCommand } from "./help";
 import { ProfileCommand } from "./profile";
 import { ScoredCommand, ScoredSearchCommand } from "./scored";
 import { SearchesCommand } from "./searches";
-import { SetProfileCommand } from "./set-profile";
+import { SetProfileWizardCommand } from "./set-profile";
 import { SetProfileCommentCommand } from "./set-profile-comment";
 
 const UNKNOWN_COMMAND_MESSAGE =
@@ -57,7 +57,6 @@ function buildTelegramCommands({
 }: TelegramCommandDependencies): Array<TelegramCommand> {
 	return [
 		new HelpCommand(telegramBot),
-		new SetProfileCommand({ telegramBot, userProfileUpsert }),
 		new SetProfileCommentCommand({
 			telegramBot,
 			userProfileFinder,
@@ -80,6 +79,10 @@ export function registerTelegramCommands({
 }: TelegramCommandDependencies): void {
 	const { telegramBot, allowedChatIds } = dependencies;
 	const commands = buildTelegramCommands(dependencies);
+	const setProfileWizard = new SetProfileWizardCommand({
+		telegramBot,
+		userProfileUpsert: dependencies.userProfileUpsert,
+	});
 
 	telegramBot.on("message", async (message) => {
 		const chatId = message.chat.id;
@@ -90,21 +93,35 @@ export function registerTelegramCommands({
 			return;
 		}
 
-		if (!text.trim().startsWith("/")) {
+		const formattedText = text.trim();
+		if (formattedText.length === 0) {
 			return;
 		}
 
-		if (!allowedChatIds.includes(receivedChatId)) {
+		const isAuthorized = allowedChatIds.includes(receivedChatId);
+		if (!isAuthorized) {
 			await telegramBot.sendMessage(chatId, PRIVATE_BOT_MESSAGE);
 			return;
 		}
 
+		const wasSetProfileWizardHandled = await setProfileWizard.handle({
+			chatId,
+			text: formattedText,
+		});
+		if (wasSetProfileWizardHandled) {
+			return;
+		}
+
+		if (!formattedText.startsWith("/")) {
+			return;
+		}
+
 		for (const command of commands) {
-			if (!command.matches(text)) {
+			if (!command.matches(formattedText)) {
 				continue;
 			}
 
-			await command.execute({ chatId, text });
+			await command.execute({ chatId, text: formattedText });
 
 			return;
 		}

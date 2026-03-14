@@ -10,12 +10,17 @@ Command registration lives in `src/apps/telegram-bot/commands/index.ts`.
 
 Shows help and command syntax.
 
-### `/setProfile {currentRole} {yearsExperience} {prioritiesCsv} {sectorExperienceCsv} {targetRolesCsv} {targetWorkModesCsv} {targetSenioritiesCsv} {targetLocationsCsv} {skillsCsv} {minSalaryOrNone}`
+### `/setProfile`
 
 Creates or updates the instance candidate profile.
 
-- List fields are comma-separated (`a,b,c`) and normalized to lowercase.
-- Use `none` for empty lists or for no minimum salary.
+- The bot asks one question at a time.
+- For list questions, answer with comma-separated values (`a,b,c`) or `none`.
+- For minimum salary, answer with a number (`>= 0`) or `none`.
+
+### `/cancel`
+
+Cancels an active `/setProfile` flow.
 
 ### `/profile`
 
@@ -102,12 +107,17 @@ Registro de comandos en `src/apps/telegram-bot/commands/index.ts`.
 
 Muestra ayuda y sintaxis de comandos.
 
-### `/setProfile {currentRole} {yearsExperience} {prioritiesCsv} {sectorExperienceCsv} {targetRolesCsv} {targetWorkModesCsv} {targetSenioritiesCsv} {targetLocationsCsv} {skillsCsv} {minSalaryOrNone}`
+### `/setProfile`
 
 Crea o actualiza el perfil de candidato de la instancia.
 
-- Los campos de lista usan coma (`a,b,c`) y se normalizan a minúsculas.
-- Usa `none` para listas vacías o sin salario mínimo.
+- El bot pregunta cada campo paso a paso.
+- En listas, responde con valores separados por comas (`a,b,c`) o `none`.
+- Para salario mínimo, responde un número (`>= 0`) o `none`.
+
+### `/cancel`
+
+Cancela un flujo activo de `/setProfile`.
 
 ### `/profile`
 

@@ -1,4 +1,10 @@
 import { registerTelegramCommands } from "../../../../src/apps/telegram-bot/commands";
+import {
+	SET_PROFILE_WIZARD_ACTIVE_COMMAND_BLOCK_MESSAGE,
+	SET_PROFILE_WIZARD_CANCELLED_MESSAGE,
+	SET_PROFILE_WIZARD_EXPIRED_MESSAGE,
+	SET_PROFILE_WIZARD_TIMEOUT_MS,
+} from "../../../../src/apps/telegram-bot/commands/set-profile";
 
 describe("registerTelegramCommands", () => {
 	function setup({
@@ -152,6 +158,100 @@ describe("registerTelegramCommands", () => {
 			123,
 			expect.stringContaining("Available commands:"),
 		);
+	});
+
+	it("starts /setProfile guided flow", async () => {
+		const { messageHandler, telegramBot, userProfileUpsert } = setup();
+
+		await expect(
+			messageHandler?.({ chat: { id: 123 }, text: "/setProfile" }),
+		).resolves.toBeUndefined();
+
+		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
+			123,
+			expect.stringContaining("Step 1/10"),
+		);
+		expect(userProfileUpsert.run).not.toHaveBeenCalled();
+	});
+
+	it("completes /setProfile guided flow and persists profile", async () => {
+		const { messageHandler, telegramBot, userProfileUpsert } = setup();
+
+		await messageHandler?.({ chat: { id: 123 }, text: "/setProfile" });
+		await messageHandler?.({ chat: { id: 123 }, text: "backend engineer" });
+		await messageHandler?.({ chat: { id: 123 }, text: "5" });
+		await messageHandler?.({ chat: { id: 123 }, text: "salary,growth" });
+		await messageHandler?.({ chat: { id: 123 }, text: "fintech" });
+		await messageHandler?.({ chat: { id: 123 }, text: "staff engineer" });
+		await messageHandler?.({ chat: { id: 123 }, text: "remote,hybrid" });
+		await messageHandler?.({ chat: { id: 123 }, text: "senior,staff" });
+		await messageHandler?.({ chat: { id: 123 }, text: "madrid,barcelona" });
+		await messageHandler?.({ chat: { id: 123 }, text: "typescript,node.js" });
+		await messageHandler?.({ chat: { id: 123 }, text: "none" });
+
+		expect(userProfileUpsert.run).toHaveBeenCalledWith({
+			chatId: "123",
+			currentRole: "backend engineer",
+			yearsExperience: 5,
+			priorities: ["salary", "growth"],
+			sectorExperience: ["fintech"],
+			targetRoles: ["staff engineer"],
+			targetWorkModes: ["remote", "hybrid"],
+			targetSeniorities: ["senior", "staff"],
+			targetLocations: ["madrid", "barcelona"],
+			skills: ["typescript", "node.js"],
+			minSalary: undefined,
+		});
+		expect(telegramBot.sendMessage).toHaveBeenLastCalledWith(
+			123,
+			"Candidate profile saved successfully.",
+		);
+	});
+
+	it("cancels active /setProfile flow with /cancel", async () => {
+		const { messageHandler, telegramBot, userProfileUpsert } = setup();
+
+		await messageHandler?.({ chat: { id: 123 }, text: "/setProfile" });
+		await messageHandler?.({ chat: { id: 123 }, text: "/cancel" });
+		await messageHandler?.({ chat: { id: 123 }, text: "backend engineer" });
+
+		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
+			123,
+			SET_PROFILE_WIZARD_CANCELLED_MESSAGE,
+		);
+		expect(userProfileUpsert.run).not.toHaveBeenCalled();
+	});
+
+	it("blocks other slash commands while /setProfile flow is active", async () => {
+		const { messageHandler, telegramBot } = setup();
+
+		await messageHandler?.({ chat: { id: 123 }, text: "/setProfile" });
+		await messageHandler?.({ chat: { id: 123 }, text: "/help" });
+
+		expect(telegramBot.sendMessage).toHaveBeenLastCalledWith(
+			123,
+			SET_PROFILE_WIZARD_ACTIVE_COMMAND_BLOCK_MESSAGE,
+		);
+	});
+
+	it("expires inactive /setProfile flow after timeout", async () => {
+		const dateNowSpy = jest.spyOn(Date, "now");
+		dateNowSpy.mockReturnValue(0);
+
+		const { messageHandler, telegramBot, userProfileUpsert } = setup();
+
+		await messageHandler?.({ chat: { id: 123 }, text: "/setProfile" });
+
+		dateNowSpy.mockReturnValue(SET_PROFILE_WIZARD_TIMEOUT_MS + 1);
+		await messageHandler?.({ chat: { id: 123 }, text: "backend engineer" });
+
+		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
+			123,
+			SET_PROFILE_WIZARD_EXPIRED_MESSAGE,
+		);
+		expect(userProfileUpsert.run).not.toHaveBeenCalled();
+
+		dateNowSpy.mockRestore();
 	});
 
 	it("routes /createSearch and calls analyze use case with parsed args", async () => {
