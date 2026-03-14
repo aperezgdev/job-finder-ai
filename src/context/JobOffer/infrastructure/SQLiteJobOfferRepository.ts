@@ -12,6 +12,7 @@ export class SQLiteJobOfferRepository
 	async save(jobOffer: JobOffer): Promise<void> {
 		const {
 			id,
+			chatId,
 			title,
 			company,
 			summary,
@@ -25,6 +26,7 @@ export class SQLiteJobOfferRepository
 		} = jobOffer.toPrimitives();
 		const entity = new JobOfferEntity(
 			id,
+			chatId,
 			title,
 			company,
 			summary,

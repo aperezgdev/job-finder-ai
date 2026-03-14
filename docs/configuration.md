@@ -10,7 +10,9 @@ The app validates configuration using Zod in `src/apps/telegram-bot/config.ts`.
 
 - `OPENAI_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
+- `TELEGRAM_CHAT_IDS` (CSV list of authorized chat/group ids)
+
+When multiple chats are authorized, each chat works as an isolated tenant (own profile, searches, scored jobs, and notifications).
 
 ### Optional with defaults
 
@@ -38,7 +40,7 @@ LOG_LEVEL=info
 DATABASE_PATH=/app/data/jobs.db
 
 TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
+TELEGRAM_CHAT_IDS=
 
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
@@ -92,7 +94,9 @@ La app valida configuración con Zod en `src/apps/telegram-bot/config.ts`.
 
 - `OPENAI_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
+- `TELEGRAM_CHAT_IDS` (lista CSV con ids de chats/grupos autorizados)
+
+Si autorizas varios chats, cada uno funciona como tenant aislado (perfil, búsquedas, ofertas puntuadas y notificaciones propios).
 
 ### Opcionales con valor por defecto
 
@@ -120,7 +124,7 @@ LOG_LEVEL=info
 DATABASE_PATH=/app/data/jobs.db
 
 TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
+TELEGRAM_CHAT_IDS=
 
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini

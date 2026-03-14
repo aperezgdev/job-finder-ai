@@ -8,9 +8,9 @@ describe("JobSearchCreator", () => {
 		const jobSearchRepository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(null),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const eventBus: EventBus = {
 			publish: jest.fn().mockResolvedValue(undefined),
@@ -21,6 +21,7 @@ describe("JobSearchCreator", () => {
 
 		await creator.run({
 			id: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: JobSearchPeriodicityEnum.WEEKLY,
@@ -48,9 +49,9 @@ describe("JobSearchCreator", () => {
 		const jobSearchRepository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(null),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const eventBus: EventBus = {
 			publish: jest.fn().mockResolvedValue(undefined),
@@ -61,6 +62,7 @@ describe("JobSearchCreator", () => {
 
 		await creator.run({
 			id: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: "",

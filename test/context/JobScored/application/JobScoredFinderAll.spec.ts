@@ -25,7 +25,7 @@ describe("JobScoredFinderAll", () => {
 
 		const repository: JobScoredRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
-			searchAll: jest.fn().mockResolvedValue(scoredJobs),
+			searchAllByChatId: jest.fn().mockResolvedValue(scoredJobs),
 			searchByJobSearchPremise: jest.fn().mockResolvedValue([]),
 		};
 		const logger: Logger = {
@@ -35,9 +35,9 @@ describe("JobScoredFinderAll", () => {
 		};
 
 		const useCase = new JobScoredFinderAll(repository, logger);
-		const result = await useCase.run();
+		const result = await useCase.run({ chatId: "123" });
 
-		expect(repository.searchAll).toHaveBeenCalledTimes(1);
+		expect(repository.searchAllByChatId).toHaveBeenCalledWith("123");
 		expect(logger.info).toHaveBeenCalledTimes(2);
 		expect(result).toEqual(scoredJobs);
 	});

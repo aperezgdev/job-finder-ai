@@ -15,6 +15,7 @@ import { JobOfferCreated } from "./JobOfferCreated";
 export class JobOffer extends AggregateRoot {
 	constructor(
 		private readonly id: JobOfferId,
+		private readonly chatId: string,
 		private readonly title: JobTitle,
 		private readonly company: JobCompany,
 		private readonly summary: JobSummary,
@@ -30,6 +31,7 @@ export class JobOffer extends AggregateRoot {
 	}
 
 	public static create({
+		chatId,
 		title,
 		company,
 		summary,
@@ -41,6 +43,7 @@ export class JobOffer extends AggregateRoot {
 		location,
 		salary,
 	}: {
+		chatId?: string;
 		title: JobTitle;
 		company: JobCompany;
 		summary: JobSummary;
@@ -54,6 +57,7 @@ export class JobOffer extends AggregateRoot {
 	}): JobOffer {
 		const jobOffer = new JobOffer(
 			JobOfferId.random(),
+			chatId ?? "",
 			title,
 			company,
 			summary,
@@ -69,6 +73,7 @@ export class JobOffer extends AggregateRoot {
 		jobOffer.record(
 			new JobOfferCreated({
 				id: jobOffer.id.value,
+				chatId: jobOffer.chatId,
 				title: title.value,
 				company: company.value,
 				summary: summary.value,
@@ -86,6 +91,7 @@ export class JobOffer extends AggregateRoot {
 	}
 	toPrimitives(): {
 		id: string;
+		chatId: string;
 		title: string;
 		company: string;
 		summary: string;
@@ -99,6 +105,7 @@ export class JobOffer extends AggregateRoot {
 	} {
 		return {
 			id: this.id.value,
+			chatId: this.chatId,
 			title: this.title.value,
 			company: this.company.value,
 			summary: this.summary.value,

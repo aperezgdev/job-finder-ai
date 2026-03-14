@@ -48,6 +48,7 @@ export class RateJobScoredOnOfferCreated
 				const batch = this.pendingEvents.splice(0, this.maxBatchSize);
 				await this.jobScoredRater.run(
 					batch.map((event) => ({
+						chatId: event.chatId,
 						jobOfferId: event.aggregateId,
 						premise: event.premise,
 						title: event.title,

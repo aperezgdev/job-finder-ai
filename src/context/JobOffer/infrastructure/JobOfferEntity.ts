@@ -6,6 +6,9 @@ export class JobOfferEntity {
 	id!: string;
 
 	@Column("text")
+	chatId!: string;
+
+	@Column("text")
 	title!: string;
 
 	@Column("text")
@@ -37,6 +40,7 @@ export class JobOfferEntity {
 
 	constructor(
 		id: string,
+		chatId: string,
 		title: string,
 		company: string,
 		summary: string,
@@ -49,6 +53,7 @@ export class JobOfferEntity {
 		salary?: number,
 	) {
 		this.id = id;
+		this.chatId = chatId;
 		this.title = title;
 		this.company = company;
 		this.summary = summary;

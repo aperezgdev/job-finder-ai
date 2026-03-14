@@ -11,24 +11,38 @@ export class JobSearchDelete {
 		private readonly logger: Logger,
 	) {}
 
-	async run({ jobSearchId }: { jobSearchId: string }): Promise<void> {
-		this.logger.info("JobSearchDelete - run - Params into", { jobSearchId });
+	async run({
+		jobSearchId,
+		chatId,
+	}: {
+		jobSearchId: string;
+		chatId: string;
+	}): Promise<void> {
+		this.logger.info("JobSearchDelete - run - Params into", {
+			jobSearchId,
+			chatId,
+		});
 
-		const jobSearch = await this.jobSearchRepository.findById(jobSearchId);
+		const jobSearch = await this.jobSearchRepository.findById(
+			jobSearchId,
+			chatId,
+		);
 
 		if (!jobSearch) {
 			throw new ValidationError("Job search not found.");
 		}
 
-		await this.jobSearchRepository.deleteById(jobSearchId);
+		await this.jobSearchRepository.deleteById(jobSearchId, chatId);
 		await this.eventBus.publish([
 			new JobSearchDeleted({
 				id: jobSearch.toPrimitives().id,
+				chatId,
 			}),
 		]);
 
 		this.logger.info("JobSearchDelete - run - Job search deleted", {
 			jobSearchId,
+			chatId,
 		});
 	}
 }

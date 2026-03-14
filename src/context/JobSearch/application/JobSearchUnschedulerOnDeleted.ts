@@ -14,6 +14,7 @@ export class JobSearchUnschedulerOnDeleted
 
 	async on(event: JobSearchDeleted): Promise<void> {
 		await this.jobSearchUnscheduler.run({
+			chatId: event.chatId,
 			jobSearchId: event.aggregateId,
 		});
 	}

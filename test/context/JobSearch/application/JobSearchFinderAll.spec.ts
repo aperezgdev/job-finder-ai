@@ -13,6 +13,7 @@ describe("JobSearchFinderAll", () => {
 	it("returns all scheduled job searches as entities", async () => {
 		const jobSearch = JobSearch.fromPrimitives({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
+			chatId: "123",
 			premise: new JobSearchPremise("TypeScript backend jobs"),
 			filter: new JobSearchFilter("backend typescript remote"),
 			periodicity: new JobSearchPeriodicity("weekly"),
@@ -23,9 +24,9 @@ describe("JobSearchFinderAll", () => {
 		const jobSearchRepository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(jobSearch),
-			searchAll: jest.fn().mockResolvedValue([jobSearch]),
+			searchAllByChatId: jest.fn().mockResolvedValue([jobSearch]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const logger: Logger = {
 			info: jest.fn(),
@@ -34,9 +35,9 @@ describe("JobSearchFinderAll", () => {
 		};
 
 		const finder = new JobSearchFinderAll(jobSearchRepository, logger);
-		const result = await finder.run();
+		const result = await finder.run({ chatId: "123" });
 
-		expect(jobSearchRepository.searchAll).toHaveBeenCalledTimes(1);
+		expect(jobSearchRepository.searchAllByChatId).toHaveBeenCalledWith("123");
 		expect(logger.info).toHaveBeenCalledTimes(2);
 		expect(result).toEqual([jobSearch]);
 	});

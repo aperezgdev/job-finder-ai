@@ -21,6 +21,7 @@ describe("JobSearchSchedulerOnCreated", () => {
 		const subscriber = new JobSearchSchedulerOnCreated(scheduler);
 		const event = new JobSearchCreated({
 			id: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: "weekly",
@@ -32,6 +33,7 @@ describe("JobSearchSchedulerOnCreated", () => {
 
 		expect(scheduler.schedule).toHaveBeenCalledTimes(1);
 		expect(scheduler.schedule).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: expect.objectContaining({
 				value: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			}),

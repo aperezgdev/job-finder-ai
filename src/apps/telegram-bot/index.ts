@@ -19,18 +19,25 @@ async function main(): Promise<void> {
 		jobSearchDeleteAll,
 		jobScoredFinderAll,
 		jobScoredFinderBySearch,
+		userProfileUpsert,
+		userProfileFinder,
+		userProfileDelete,
 		rateJobScoredOnOfferCreated,
 		logger,
 	} = container.cradle;
 
 	registerTelegramCommands({
 		telegramBot,
+		allowedChatIds: config.telegram.allowedChatIds,
 		jobSearchPremiseAnalyze,
 		jobSearchFinderAll,
 		jobSearchDelete,
 		jobSearchDeleteAll,
 		jobScoredFinderAll,
 		jobScoredFinderBySearch,
+		userProfileUpsert,
+		userProfileFinder,
+		userProfileDelete,
 		deadLetterQueue,
 	});
 

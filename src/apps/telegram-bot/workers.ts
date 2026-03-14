@@ -13,6 +13,7 @@ import type { Logger } from "../../context/Shared/domain/Logger";
 import type { AppConfig } from "./config";
 
 export type JobSearchScrapePayload = {
+	chatId: string;
 	jobSearchId: string;
 	premise: string;
 	filter: string;
@@ -73,6 +74,7 @@ export const createJobSearchScrapeWorker = ({
 
 			try {
 				await jobOffersGetLatest.run({
+					chatId: job.data.chatId,
 					jobSearchId: new JobSearchId(job.data.jobSearchId),
 					premise: new JobPremise(job.data.premise),
 					searchFilter: new JobSearchFilter(job.data.filter),

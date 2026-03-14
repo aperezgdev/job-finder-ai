@@ -25,7 +25,7 @@ export type AppConfig = {
 	};
 	telegram: {
 		token: string;
-		chatId: string;
+		allowedChatIds: string[];
 	};
 	language: string;
 };
@@ -47,9 +47,20 @@ const envSchema = z.object({
 		.string()
 		.trim()
 		.min(1, "TELEGRAM_BOT_TOKEN is required"),
-	TELEGRAM_CHAT_ID: z.string().trim().min(1, "TELEGRAM_CHAT_ID is required"),
+	TELEGRAM_CHAT_IDS: z.string().trim().min(1, "TELEGRAM_CHAT_IDS is required"),
 	LANGUAGE: z.string().trim().min(1).default("en"),
 });
+
+function parseAllowedChatIds(chatIdsCsv: string): string[] {
+	return Array.from(
+		new Set(
+			chatIdsCsv
+				.split(",")
+				.map((value) => value.trim())
+				.filter((value) => value.length > 0),
+		),
+	);
+}
 
 function buildConfigError(error: z.ZodError): Error {
 	const details = error.issues
@@ -100,7 +111,7 @@ export function getAppConfig(): AppConfig {
 		},
 		telegram: {
 			token: env.TELEGRAM_BOT_TOKEN,
-			chatId: env.TELEGRAM_CHAT_ID,
+			allowedChatIds: parseAllowedChatIds(env.TELEGRAM_CHAT_IDS),
 		},
 		language: env.LANGUAGE,
 	};

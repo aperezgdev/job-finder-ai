@@ -23,6 +23,17 @@ export type TypedTelegramCommandRunContext<TArgs> = {
 	args: TArgs;
 };
 
+export function splitCsv(input: string): string[] {
+	if (!input || input.toLowerCase() === "none") {
+		return [];
+	}
+
+	return input
+		.split(",")
+		.map((value) => value.trim())
+		.filter((value) => value.length > 0);
+}
+
 export abstract class TelegramCommand {
 	constructor(
 		protected readonly commandPattern: RegExp,

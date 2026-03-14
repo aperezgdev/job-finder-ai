@@ -9,6 +9,7 @@ import type { JobSearchScheduledAtUtcHour } from "./JobSearchScheduledAtUtcHour"
 
 export class JobSearch extends AggregateRoot {
 	private readonly id: JobSearchId;
+	private readonly chatId: string;
 	private readonly premise: JobSearchPremise;
 	private readonly filter: JobSearchFilter;
 	private readonly periodicity: JobSearchPeriodicity;
@@ -17,6 +18,7 @@ export class JobSearch extends AggregateRoot {
 
 	constructor(
 		id: JobSearchId,
+		chatId: string,
 		premise: JobSearchPremise,
 		filter: JobSearchFilter,
 		periodicity: JobSearchPeriodicity,
@@ -25,6 +27,7 @@ export class JobSearch extends AggregateRoot {
 	) {
 		super();
 		this.id = id;
+		this.chatId = chatId;
 		this.premise = premise;
 		this.filter = filter;
 		this.periodicity = periodicity;
@@ -34,6 +37,7 @@ export class JobSearch extends AggregateRoot {
 
 	static create({
 		id,
+		chatId,
 		premise,
 		filter,
 		periodicity,
@@ -41,6 +45,7 @@ export class JobSearch extends AggregateRoot {
 		minNotificationRating,
 	}: {
 		id: JobSearchId;
+		chatId: string;
 		premise: JobSearchPremise;
 		filter: JobSearchFilter;
 		periodicity: JobSearchPeriodicity;
@@ -49,6 +54,7 @@ export class JobSearch extends AggregateRoot {
 	}): JobSearch {
 		const jobSearch = new JobSearch(
 			id,
+			chatId,
 			premise,
 			filter,
 			periodicity,
@@ -59,6 +65,7 @@ export class JobSearch extends AggregateRoot {
 		jobSearch.record(
 			new JobSearchCreated({
 				id: jobSearch.id.value,
+				chatId: jobSearch.chatId,
 				premise: jobSearch.premise.value,
 				filter: jobSearch.filter.value,
 				periodicity: jobSearch.periodicity.value,
@@ -72,6 +79,7 @@ export class JobSearch extends AggregateRoot {
 
 	static fromPrimitives({
 		id,
+		chatId,
 		premise,
 		filter,
 		periodicity,
@@ -79,6 +87,7 @@ export class JobSearch extends AggregateRoot {
 		minNotificationRating,
 	}: {
 		id: JobSearchId;
+		chatId: string;
 		premise: JobSearchPremise;
 		filter: JobSearchFilter;
 		periodicity: JobSearchPeriodicity;
@@ -87,6 +96,7 @@ export class JobSearch extends AggregateRoot {
 	}): JobSearch {
 		return new JobSearch(
 			id,
+			chatId,
 			premise,
 			filter,
 			periodicity,
@@ -97,6 +107,7 @@ export class JobSearch extends AggregateRoot {
 
 	toPrimitives(): {
 		id: string;
+		chatId: string;
 		premise: string;
 		filter: string;
 		periodicity: string;
@@ -105,6 +116,7 @@ export class JobSearch extends AggregateRoot {
 	} {
 		return {
 			id: this.id.value,
+			chatId: this.chatId,
 			premise: this.premise.value,
 			filter: this.filter.value,
 			periodicity: this.periodicity.value,

@@ -25,12 +25,14 @@ describe("JobSearchUnschedulerOnDeleted", () => {
 		const subscriber = new JobSearchUnschedulerOnDeleted(jobSearchUnscheduler);
 		const event = new JobSearchDeleted({
 			id: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 		});
 
 		await subscriber.on(event);
 
 		expect(unschedulerSpy).toHaveBeenCalledTimes(1);
 		expect(unschedulerSpy).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 		});
 		expect(scheduler.unschedule).toHaveBeenCalledTimes(1);

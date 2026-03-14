@@ -20,6 +20,7 @@ describe("JobSearchCreatorOnPremiseAnalyzed", () => {
 		);
 		const event = new JobSearchPremiseAnalyzed({
 			jobSearchId: "search-id",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: "weekly",
@@ -32,6 +33,7 @@ describe("JobSearchCreatorOnPremiseAnalyzed", () => {
 		expect(jobSearchCreator.run).toHaveBeenCalledTimes(1);
 		expect(jobSearchCreator.run).toHaveBeenCalledWith({
 			id: "search-id",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: "weekly",

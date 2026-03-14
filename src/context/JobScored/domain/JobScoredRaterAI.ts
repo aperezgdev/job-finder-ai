@@ -11,6 +11,20 @@ import type { JobScoredComment } from "./JobScoredComment";
 import type { JobScoredHighlights } from "./JobScoredHighlights";
 import type { JobScoredRating } from "./JobScoredRating";
 
+export type CandidateProfileSnapshot = {
+	currentRole: string;
+	yearsExperience: number;
+	priorities: string[];
+	sectorExperience: string[];
+	targetRoles: string[];
+	targetWorkModes: string[];
+	targetSeniorities: string[];
+	targetLocations: string[];
+	skills: string[];
+	minSalary?: number;
+	profileComment?: string;
+};
+
 export interface JobScoredEvaluation {
 	rating: JobScoredRating;
 	comment: JobScoredComment;
@@ -20,6 +34,7 @@ export interface JobScoredEvaluation {
 export type JobScoredRaterInput = {
 	id: string;
 	premise: JobPremise;
+	candidateProfile?: CandidateProfileSnapshot;
 	title: JobTitle;
 	summary: JobSummary;
 	company: JobCompany;

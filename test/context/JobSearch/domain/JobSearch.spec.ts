@@ -10,6 +10,7 @@ describe("JobSearch aggregate", () => {
 	it("creates a job search, records event and serializes primitives", () => {
 		const jobSearch = JobSearch.create({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
+			chatId: "123",
 			premise: new JobSearchPremise("Remote backend jobs"),
 			filter: new JobSearchFilter("backend remote"),
 			periodicity: new JobSearchPeriodicity("weekly"),
@@ -19,6 +20,7 @@ describe("JobSearch aggregate", () => {
 
 		expect(jobSearch.toPrimitives()).toEqual({
 			id: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 			premise: "Remote backend jobs",
 			filter: "backend remote",
 			periodicity: "weekly",

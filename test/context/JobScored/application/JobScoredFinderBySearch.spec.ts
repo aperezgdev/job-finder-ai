@@ -18,6 +18,7 @@ describe("JobScoredFinderBySearch", () => {
 	it("returns scored jobs for an existing search", async () => {
 		const jobSearch = JobSearch.fromPrimitives({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
+			chatId: "123",
 			premise: new JobSearchPremise("TypeScript backend jobs"),
 			filter: new JobSearchFilter("backend typescript remote"),
 			periodicity: new JobSearchPeriodicity("weekly"),
@@ -43,13 +44,13 @@ describe("JobScoredFinderBySearch", () => {
 		const jobSearchRepository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(jobSearch),
-			searchAll: jest.fn().mockResolvedValue([jobSearch]),
+			searchAllByChatId: jest.fn().mockResolvedValue([jobSearch]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const jobScoredRepository: JobScoredRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			searchByJobSearchPremise: jest.fn().mockResolvedValue(scoredJobs),
 		};
 		const logger: Logger = {
@@ -66,13 +67,16 @@ describe("JobScoredFinderBySearch", () => {
 
 		const result = await useCase.run({
 			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
 		});
 
 		expect(jobSearchRepository.findById).toHaveBeenCalledWith(
 			"018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			"123",
 		);
 		expect(jobScoredRepository.searchByJobSearchPremise).toHaveBeenCalledWith(
 			"TypeScript backend jobs",
+			"123",
 		);
 		expect(result).toEqual(scoredJobs);
 	});
@@ -81,13 +85,13 @@ describe("JobScoredFinderBySearch", () => {
 		const jobSearchRepository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(null),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const jobScoredRepository: JobScoredRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			searchByJobSearchPremise: jest.fn().mockResolvedValue([]),
 		};
 		const logger: Logger = {
@@ -105,6 +109,7 @@ describe("JobScoredFinderBySearch", () => {
 		await expect(
 			useCase.run({
 				jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+				chatId: "123",
 			}),
 		).rejects.toBeInstanceOf(ValidationError);
 

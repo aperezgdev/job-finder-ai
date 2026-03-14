@@ -2,6 +2,7 @@ import { AplicationEvent } from "../../Shared/application/AplicationEvent";
 
 export class JobScoredRated extends AplicationEvent {
 	static EVENT_NAME = "job_scored_rated";
+	readonly chatId: string;
 	readonly jobOfferId: string;
 	readonly title: string;
 	readonly summary: string;
@@ -17,6 +18,7 @@ export class JobScoredRated extends AplicationEvent {
 	readonly salary?: number;
 
 	constructor(payload: {
+		chatId: string;
 		jobOfferId: string;
 		title: string;
 		summary: string;
@@ -34,6 +36,7 @@ export class JobScoredRated extends AplicationEvent {
 		super({
 			eventName: JobScoredRated.EVENT_NAME,
 		});
+		this.chatId = payload.chatId;
 		this.jobOfferId = payload.jobOfferId;
 		this.title = payload.title;
 		this.summary = payload.summary;

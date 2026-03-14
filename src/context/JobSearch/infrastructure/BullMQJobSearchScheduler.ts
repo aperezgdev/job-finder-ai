@@ -50,6 +50,7 @@ export class BullMQJobSearchScheduler implements JobSearchScheduler {
 	}
 
 	async schedule(payload: {
+		chatId: string;
 		jobSearchId: JobSearchId;
 		premise: JobSearchPremise;
 		filter: JobSearchFilter;
@@ -64,7 +65,7 @@ export class BullMQJobSearchScheduler implements JobSearchScheduler {
 		const startDate = this.nextUtcDate(hour, minute);
 
 		await this.queue.upsertJobScheduler(
-			payload.jobSearchId.value,
+			this.schedulerId(payload.chatId, payload.jobSearchId.value),
 			{
 				every: MILLISECONDS_BY_PERIODICITY[payload.periodicity.value],
 				startDate,
@@ -72,6 +73,7 @@ export class BullMQJobSearchScheduler implements JobSearchScheduler {
 			{
 				name: JOB_SEARCH_SCRAPE_JOB_NAME,
 				data: {
+					chatId: payload.chatId,
 					jobSearchId: payload.jobSearchId.value,
 					premise: payload.premise.value,
 					filter: payload.filter.value,
@@ -89,6 +91,10 @@ export class BullMQJobSearchScheduler implements JobSearchScheduler {
 				},
 			},
 		);
+	}
+
+	private schedulerId(chatId: string, jobSearchId: string): string {
+		return `${chatId}:${jobSearchId}`;
 	}
 
 	private nextUtcDate(hour: number, minute: number): Date {
@@ -112,7 +118,12 @@ export class BullMQJobSearchScheduler implements JobSearchScheduler {
 		return scheduled;
 	}
 
-	async unschedule(payload: { jobSearchId: JobSearchId }): Promise<void> {
-		await this.queue.removeJobScheduler(payload.jobSearchId.value);
+	async unschedule(payload: {
+		chatId: string;
+		jobSearchId: JobSearchId;
+	}): Promise<void> {
+		await this.queue.removeJobScheduler(
+			this.schedulerId(payload.chatId, payload.jobSearchId.value),
+		);
 	}
 }

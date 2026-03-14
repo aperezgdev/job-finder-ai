@@ -1,7 +1,11 @@
 import { registerTelegramCommands } from "../../../../src/apps/telegram-bot/commands";
 
 describe("registerTelegramCommands", () => {
-	function setup() {
+	function setup({
+		allowedChatIds = ["123"],
+	}: {
+		allowedChatIds?: string[];
+	} = {}) {
 		let messageHandler:
 			| ((message: { chat: { id: number }; text?: string }) => Promise<void>)
 			| undefined;
@@ -33,18 +37,31 @@ describe("registerTelegramCommands", () => {
 		const jobScoredFinderBySearch = {
 			run: jest.fn().mockResolvedValue([]),
 		};
+		const userProfileUpsert = {
+			run: jest.fn().mockResolvedValue(undefined),
+		};
+		const userProfileFinder = {
+			run: jest.fn().mockResolvedValue(null),
+		};
+		const userProfileDelete = {
+			run: jest.fn().mockResolvedValue(undefined),
+		};
 		const deadLetterQueue = {
 			getJobs: jest.fn().mockResolvedValue([]),
 		};
 
 		registerTelegramCommands({
 			telegramBot: telegramBot as never,
+			allowedChatIds,
 			jobSearchPremiseAnalyze: jobSearchPremiseAnalyze as never,
 			jobSearchFinderAll: jobSearchFinderAll as never,
 			jobSearchDelete: jobSearchDelete as never,
 			jobSearchDeleteAll: jobSearchDeleteAll as never,
 			jobScoredFinderAll: jobScoredFinderAll as never,
 			jobScoredFinderBySearch: jobScoredFinderBySearch as never,
+			userProfileUpsert: userProfileUpsert as never,
+			userProfileFinder: userProfileFinder as never,
+			userProfileDelete: userProfileDelete as never,
 			deadLetterQueue: deadLetterQueue as never,
 		});
 
@@ -63,6 +80,9 @@ describe("registerTelegramCommands", () => {
 			jobSearchDeleteAll,
 			jobScoredFinderAll,
 			jobScoredFinderBySearch,
+			userProfileUpsert,
+			userProfileFinder,
+			userProfileDelete,
 			deadLetterQueue,
 		};
 	}
@@ -145,6 +165,7 @@ describe("registerTelegramCommands", () => {
 		).resolves.toBeUndefined();
 
 		expect(jobSearchPremiseAnalyze.run).toHaveBeenCalledWith({
+			chatId: "123",
 			premise: "senior backend engineer",
 			periodicity: "weekly",
 			scheduledAtUtcHour: "09:30",
@@ -173,5 +194,25 @@ describe("registerTelegramCommands", () => {
 			123,
 			"Dead-letter queue is empty.",
 		);
+	});
+
+	it("responds with private/self-hosted message for unauthorized chat commands", async () => {
+		const { messageHandler, telegramBot, jobSearchPremiseAnalyze } = setup({
+			allowedChatIds: ["123"],
+		});
+
+		await expect(
+			messageHandler?.({
+				chat: { id: 999 },
+				text: "/createSearch senior backend engineer weekly 09:30 4.5",
+			}),
+		).resolves.toBeUndefined();
+
+		expect(telegramBot.sendMessage).toHaveBeenCalledTimes(1);
+		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
+			999,
+			"This bot is private and self-hosted. To use it, deploy your own instance and check the project's GitHub repository.",
+		);
+		expect(jobSearchPremiseAnalyze.run).not.toHaveBeenCalled();
 	});
 });

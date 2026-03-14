@@ -17,7 +17,10 @@ export type JobScoredSummary = {
 };
 
 export interface JobScoredRepository {
-	save(jobScored: JobScored): Promise<void>;
-	searchAll(): Promise<Array<JobScoredSummary>>;
-	searchByJobSearchPremise(premise: string): Promise<Array<JobScoredSummary>>;
+	save(chatId: string, jobScored: JobScored): Promise<void>;
+	searchAllByChatId(chatId: string): Promise<Array<JobScoredSummary>>;
+	searchByJobSearchPremise(
+		premise: string,
+		chatId: string,
+	): Promise<Array<JobScoredSummary>>;
 }

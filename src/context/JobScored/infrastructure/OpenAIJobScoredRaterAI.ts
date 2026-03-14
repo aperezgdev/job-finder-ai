@@ -3,6 +3,7 @@ import { OpenAIJsonObjectGenerator } from "../../Shared/infrastructure/OpenAIJso
 import { JobScoredComment } from "../domain/JobScoredComment";
 import { JobScoredHighlights } from "../domain/JobScoredHighlights";
 import type {
+	CandidateProfileSnapshot,
 	JobScoredEvaluation,
 	JobScoredRaterAI,
 	JobScoredRaterInput,
@@ -11,7 +12,7 @@ import { JobScoredRating } from "../domain/JobScoredRating";
 
 export class OpenAIJobScoredRaterAI implements JobScoredRaterAI {
 	private static readonly EVALUATION_SYSTEM_PROMPT =
-		'You are a strict and skeptical job offer evaluator. Score only with evidence present in premise/title/summary/company/provider/link/work mode/location/salary. Never assume missing facts. If a requirement from premise is not explicitly supported by the offer data, treat it as unmet. Especially for company-type constraints (for example "empresa de producto"), verify with explicit signals in summary/company/provider/link text; if not verifiable, penalize clearly. Use this conservative rubric from 0 to 5: 0-1 very poor fit; 2 low fit; 3 acceptable/partial fit; 4 strong fit with clear evidence; 5 exceptional fit with multiple explicit matches and no major gaps. Default around 2.5-3 when evidence is mixed or incomplete. Avoid inflated ratings. rating must always be between 0 and 5, in increments of 0.5 only. In comment (max 512 chars), comments must be atomic (do not mention previous comments) explicitly mention the top mismatch or uncertainty first, then the strongest match. highlights must be short factual points grounded in provided text only (max 4 items).';
+		'You are a strict and skeptical job offer evaluator. Score only with evidence present in premise/title/summary/company/provider/link/work mode/location/salary/candidate profile snapshot. Never assume missing facts. If a requirement from premise or candidate profile snapshot is not explicitly supported by the offer data, treat it as unmet. Especially for company-type constraints (for example "empresa de producto"), verify with explicit signals in summary/company/provider/link text; if not verifiable, penalize clearly. Use this conservative rubric from 0 to 5: 0-1 very poor fit; 2 low fit; 3 acceptable/partial fit; 4 strong fit with clear evidence; 5 exceptional fit with multiple explicit matches and no major gaps. Default around 2.5-3 when evidence is mixed or incomplete. Avoid inflated ratings. rating must always be between 0 and 5, in increments of 0.5 only. In comment (max 512 chars), comments must be atomic (do not mention previous comments) explicitly mention the top mismatch or uncertainty first, then the strongest match. highlights must be short factual points grounded in provided text only (max 4 items).';
 
 	private readonly generator: OpenAIJsonObjectGenerator;
 
@@ -96,6 +97,7 @@ export class OpenAIJobScoredRaterAI implements JobScoredRaterAI {
 	private toSerializableInput(input: JobScoredRaterInput): {
 		id: string;
 		premise: string;
+		candidateProfile: CandidateProfileSnapshot | "N/A";
 		title: string;
 		summary: string;
 		company: string;
@@ -108,6 +110,7 @@ export class OpenAIJobScoredRaterAI implements JobScoredRaterAI {
 		return {
 			id: input.id,
 			premise: input.premise.value,
+			candidateProfile: input.candidateProfile ?? "N/A",
 			title: input.title.value,
 			summary: input.summary.value,
 			company: input.company.value,

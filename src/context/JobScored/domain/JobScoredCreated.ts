@@ -2,6 +2,7 @@ import { DomainEvent } from "../../Shared/domain/event/DomainEvent";
 
 export class JobScoredCreated extends DomainEvent {
 	static EVENT_NAME = "job_scored.created";
+	readonly chatId: string;
 
 	readonly title: string;
 	readonly summary: string;
@@ -18,6 +19,7 @@ export class JobScoredCreated extends DomainEvent {
 
 	constructor(payload: {
 		id: string;
+		chatId: string;
 		title: string;
 		summary: string;
 		company: string;
@@ -35,6 +37,7 @@ export class JobScoredCreated extends DomainEvent {
 			eventName: JobScoredCreated.EVENT_NAME,
 			aggregateId: payload.id,
 		});
+		this.chatId = payload.chatId;
 		this.title = payload.title;
 		this.summary = payload.summary;
 		this.company = payload.company;

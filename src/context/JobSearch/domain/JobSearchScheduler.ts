@@ -7,6 +7,7 @@ import type { JobSearchScheduledAtUtcHour } from "./JobSearchScheduledAtUtcHour"
 
 export interface JobSearchScheduler {
 	schedule(payload: {
+		chatId: string;
 		jobSearchId: JobSearchId;
 		premise: JobSearchPremise;
 		filter: JobSearchFilter;
@@ -14,5 +15,8 @@ export interface JobSearchScheduler {
 		scheduledAtUtcHour: JobSearchScheduledAtUtcHour;
 		minNotificationRating: JobMinNotificationRating;
 	}): Promise<void>;
-	unschedule(payload: { jobSearchId: JobSearchId }): Promise<void>;
+	unschedule(payload: {
+		chatId: string;
+		jobSearchId: JobSearchId;
+	}): Promise<void>;
 }

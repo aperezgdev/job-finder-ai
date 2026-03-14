@@ -15,6 +15,7 @@ export class JobSearchCreatorOnPremiseAnalyzed
 	async on(event: JobSearchPremiseAnalyzed): Promise<void> {
 		await this.jobSearchCreator.run({
 			id: event.jobSearchId,
+			chatId: event.chatId,
 			premise: event.premise,
 			filter: event.filter,
 			periodicity: event.periodicity,

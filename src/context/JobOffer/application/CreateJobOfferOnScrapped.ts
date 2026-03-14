@@ -14,6 +14,7 @@ export class OnJobOffersScrapedCreator
 
 	on(event: JobOfferScrapped): Promise<void> {
 		return this.creator.create({
+			chatId: event.chatId,
 			title: event.title,
 			company: event.company,
 			summary: event.summary,

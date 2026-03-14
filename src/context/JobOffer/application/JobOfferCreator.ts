@@ -21,6 +21,7 @@ export class JobOfferCreator {
 	) {}
 
 	async create({
+		chatId,
 		title,
 		company,
 		summary,
@@ -32,6 +33,7 @@ export class JobOfferCreator {
 		location,
 		salary,
 	}: {
+		chatId: string;
 		title: string;
 		company: string;
 		summary: string;
@@ -53,6 +55,7 @@ export class JobOfferCreator {
 
 		const resolvedWorkMode = workMode ?? JobWorkModeEnum.UNSPECIFIED;
 		const jobOffer = JobOffer.create({
+			chatId,
 			title: new JobTitle(title),
 			company: new JobCompany(company),
 			summary: new JobSummary(summary),

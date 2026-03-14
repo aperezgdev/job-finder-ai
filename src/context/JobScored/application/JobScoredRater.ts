@@ -9,7 +9,9 @@ import { JobSummary } from "../../Shared/domain/JobSummary";
 import { JobTitle } from "../../Shared/domain/JobTitle";
 import { JobWorkMode } from "../../Shared/domain/JobWorkMode";
 import type { Logger } from "../../Shared/domain/Logger";
+import type { UserProfileRepository } from "../../UserProfile/domain/UserProfileRepository";
 import type {
+	CandidateProfileSnapshot,
 	JobScoredEvaluation,
 	JobScoredRaterAI,
 	JobScoredRaterInput,
@@ -17,6 +19,7 @@ import type {
 import { JobScoredRated } from "./JobScoredRated";
 
 export type JobScoredRateInput = {
+	chatId: string;
 	jobOfferId: string;
 	premise: string;
 	title: string;
@@ -35,6 +38,7 @@ export class JobScoredRater {
 		private readonly eventBus: EventBus,
 		private readonly raterAI: JobScoredRaterAI,
 		private readonly logger: Logger,
+		private readonly userProfileRepository: UserProfileRepository,
 	) {}
 
 	async run(inputs: Array<JobScoredRateInput>): Promise<void> {
@@ -44,7 +48,11 @@ export class JobScoredRater {
 			batchSize: inputs.length,
 		});
 
-		const raterInputs = inputs.map((input) => this.toRaterInput(input));
+		const raterInputs: JobScoredRaterInput[] = [];
+		for (const input of inputs) {
+			const profileContext = await this.loadProfileContext(input.chatId);
+			raterInputs.push(this.toRaterInput(input, profileContext));
+		}
 		const evaluations = await this.evaluateBatch(raterInputs);
 
 		if (evaluations.length !== inputs.length) {
@@ -57,6 +65,7 @@ export class JobScoredRater {
 			const evaluation = evaluations[index];
 
 			return new JobScoredRated({
+				chatId: input.chatId,
 				jobOfferId: input.jobOfferId,
 				title: input.title,
 				company: input.company,
@@ -81,10 +90,14 @@ export class JobScoredRater {
 		});
 	}
 
-	private toRaterInput(input: JobScoredRateInput): JobScoredRaterInput {
+	private toRaterInput(
+		input: JobScoredRateInput,
+		candidateProfile?: CandidateProfileSnapshot,
+	): JobScoredRaterInput {
 		return {
 			id: input.jobOfferId,
 			premise: new JobPremise(input.premise),
+			candidateProfile,
 			title: new JobTitle(input.title),
 			summary: new JobSummary(input.summary),
 			company: new JobCompany(input.company),
@@ -100,5 +113,29 @@ export class JobScoredRater {
 		raterInputs: Array<JobScoredRaterInput>,
 	): Promise<Array<JobScoredEvaluation>> {
 		return this.raterAI.rate(raterInputs);
+	}
+
+	private async loadProfileContext(
+		chatId: string,
+	): Promise<CandidateProfileSnapshot | undefined> {
+		const userProfile = await this.userProfileRepository.findByChatId(chatId);
+		if (!userProfile) {
+			return undefined;
+		}
+
+		const profilePrimitives = userProfile.toPrimitives();
+		return {
+			currentRole: profilePrimitives.currentRole,
+			yearsExperience: profilePrimitives.yearsExperience,
+			priorities: profilePrimitives.priorities,
+			sectorExperience: profilePrimitives.sectorExperience,
+			targetRoles: profilePrimitives.targetRoles,
+			targetWorkModes: profilePrimitives.targetWorkModes,
+			targetSeniorities: profilePrimitives.targetSeniorities,
+			targetLocations: profilePrimitives.targetLocations,
+			skills: profilePrimitives.skills,
+			minSalary: profilePrimitives.minSalary,
+			profileComment: profilePrimitives.profileComment,
+		};
 	}
 }

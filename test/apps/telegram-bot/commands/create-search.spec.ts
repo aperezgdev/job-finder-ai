@@ -19,6 +19,7 @@ describe("CreateSearchCommand", () => {
 		});
 
 		expect(jobSearchPremiseAnalyze.run).toHaveBeenCalledWith({
+			chatId: "123",
 			premise: "senior backend engineer",
 			periodicity: "weekly",
 			scheduledAtUtcHour: "09:30",

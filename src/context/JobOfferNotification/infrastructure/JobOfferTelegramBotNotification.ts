@@ -12,12 +12,10 @@ import type { JobTitle } from "../../Shared/domain/JobTitle";
 import type { JobWorkMode } from "../../Shared/domain/JobWorkMode";
 
 export class JobOfferTelegramBotNotification {
-	constructor(
-		private readonly telegramBot: TelegramBot,
-		private readonly chatId: string,
-	) {}
+	constructor(private readonly telegramBot: TelegramBot) {}
 
 	async send({
+		chatId,
 		title,
 		summary,
 		company,
@@ -30,6 +28,7 @@ export class JobOfferTelegramBotNotification {
 		workMode,
 		salary,
 	}: {
+		chatId: string;
 		title: JobTitle;
 		summary: JobSummary;
 		company: JobCompany;
@@ -43,7 +42,7 @@ export class JobOfferTelegramBotNotification {
 		highlights: JobScoredHighlights;
 	}): Promise<void> {
 		await this.telegramBot.sendMessage(
-			this.chatId,
+			chatId,
 			this.formatMessage({
 				title,
 				summary,
@@ -62,16 +61,18 @@ export class JobOfferTelegramBotNotification {
 	}
 
 	async sendScrapeSummary({
+		chatId,
 		jobSearchId,
 		premise,
 		totalScraped,
 	}: {
+		chatId: string;
 		jobSearchId: string;
 		premise: string;
 		totalScraped: number;
 	}): Promise<void> {
 		await this.telegramBot.sendMessage(
-			this.chatId,
+			chatId,
 			this.formatScrapeSummaryMessage({
 				jobSearchId,
 				premise,

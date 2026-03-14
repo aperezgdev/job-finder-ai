@@ -12,6 +12,7 @@ import type { JobWorkMode } from "../../Shared/domain/JobWorkMode";
 
 export interface JobOfferNotifier {
 	send(input: {
+		chatId: string;
 		title: JobTitle;
 		summary: JobSummary;
 		company: JobCompany;
@@ -26,6 +27,7 @@ export interface JobOfferNotifier {
 	}): Promise<void>;
 
 	sendScrapeSummary(input: {
+		chatId: string;
 		jobSearchId: string;
 		premise: string;
 		totalScraped: number;

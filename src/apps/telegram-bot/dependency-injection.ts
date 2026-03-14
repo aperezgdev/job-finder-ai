@@ -51,6 +51,11 @@ import type { EventSubscriber } from "../../context/Shared/domain/event/EventSub
 import type { Logger } from "../../context/Shared/domain/Logger";
 import { InMemoryEventBus } from "../../context/Shared/infrastructure/InMemoryEventBus";
 import { PinoLogger } from "../../context/Shared/infrastructure/PinoLogger";
+import { UserProfileDelete } from "../../context/UserProfile/application/UserProfileDelete";
+import { UserProfileFinder } from "../../context/UserProfile/application/UserProfileFinder";
+import { UserProfileUpsert } from "../../context/UserProfile/application/UserProfileUpsert";
+import { SQLiteUserProfileRepository } from "../../context/UserProfile/infrastructure/SQLiteUserProfileRepository";
+import { UserProfileEntity } from "../../context/UserProfile/infrastructure/UserProfileEntity";
 import type { AppConfig } from "./config";
 import {
 	createJobSearchScrapeDeadLetterQueue,
@@ -68,6 +73,7 @@ export type TelegramBotContainer = {
 	jobOfferRepository: SQLiteJobOfferRepository;
 	jobSearchRepository: SQLiteJobSearchRepository;
 	jobScoredRepository: SQLiteJobScoredRepository;
+	userProfileRepository: SQLiteUserProfileRepository;
 	scheduler: BullMQJobSearchScheduler;
 	jobOfferScrapper: LinkedInJobOfferScrapper;
 	jobOffersGetLatest: JobOffersGetLatest;
@@ -91,6 +97,9 @@ export type TelegramBotContainer = {
 	jobScoredCreator: JobScoredCreator;
 	jobScoredFinderAll: JobScoredFinderAll;
 	jobScoredFinderBySearch: JobScoredFinderBySearch;
+	userProfileUpsert: UserProfileUpsert;
+	userProfileFinder: UserProfileFinder;
+	userProfileDelete: UserProfileDelete;
 	rateJobScoredOnOfferCreated: RateJobScoredOnOfferCreated;
 	createJobScoredOnRated: CreateJobScoredOnRated;
 	telegramBot: TelegramBot;
@@ -114,6 +123,7 @@ export const initContainer = (
 		jobOfferRepository: asClass(SQLiteJobOfferRepository).singleton(),
 		jobSearchRepository: asClass(SQLiteJobSearchRepository).singleton(),
 		jobScoredRepository: asClass(SQLiteJobScoredRepository).singleton(),
+		userProfileRepository: asClass(SQLiteUserProfileRepository).singleton(),
 		scheduler: asFunction(
 			(config) =>
 				new BullMQJobSearchScheduler({
@@ -177,17 +187,17 @@ export const initContainer = (
 		jobScoredCreator: asClass(JobScoredCreator).scoped(),
 		jobScoredFinderAll: asClass(JobScoredFinderAll).scoped(),
 		jobScoredFinderBySearch: asClass(JobScoredFinderBySearch).scoped(),
+		userProfileUpsert: asClass(UserProfileUpsert).scoped(),
+		userProfileFinder: asClass(UserProfileFinder).scoped(),
+		userProfileDelete: asClass(UserProfileDelete).scoped(),
 		rateJobScoredOnOfferCreated: asClass(RateJobScoredOnOfferCreated).scoped(),
 		createJobScoredOnRated: asClass(CreateJobScoredOnRated).scoped(),
 
 		telegramBot: asFunction((config) => {
 			return new TelegramBot(config.telegram.token, { polling: true });
 		}).singleton(),
-		jobOfferNotifier: asFunction((telegramBot, config) => {
-			return new JobOfferTelegramBotNotification(
-				telegramBot,
-				config.telegram.chatId,
-			);
+		jobOfferNotifier: asFunction((telegramBot) => {
+			return new JobOfferTelegramBotNotification(telegramBot);
 		}).scoped(),
 		notifier: asFunction((jobOfferNotifier) => jobOfferNotifier).scoped(),
 		jobOfferNotificationSender: asClass(JobOfferNotificationSender).scoped(),
@@ -252,7 +262,12 @@ export async function createTelegramBotContainer(
 		type: "sqlite",
 		database: config.databasePath,
 		synchronize: true,
-		entities: [JobOfferEntity, JobSearchEntity, JobScoredEntity],
+		entities: [
+			JobOfferEntity,
+			JobSearchEntity,
+			JobScoredEntity,
+			UserProfileEntity,
+		],
 	});
 
 	await dataSource.initialize();

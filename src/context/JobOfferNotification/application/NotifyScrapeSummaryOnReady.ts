@@ -18,6 +18,7 @@ export class NotifyScrapeSummaryOnReady
 
 	async on(event: JobOffersScrapeSummaryReady): Promise<void> {
 		await this.sender.run({
+			chatId: event.chatId,
 			jobSearchId: new JobSearchId(event.jobSearchId),
 			premise: new JobPremise(event.premise),
 			totalScraped: event.scrapedCount,

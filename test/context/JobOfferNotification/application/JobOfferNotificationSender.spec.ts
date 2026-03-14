@@ -11,6 +11,7 @@ describe("JobOfferNotificationSender", () => {
 		const sender = new JobOfferNotificationSender(notifier);
 
 		await sender.run({
+			chatId: "123",
 			jobScoredId: "score-id",
 			title: "Backend Engineer",
 			summary: "Node.js role",
@@ -27,6 +28,7 @@ describe("JobOfferNotificationSender", () => {
 
 		expect(notifier.send).toHaveBeenCalledTimes(1);
 		expect(notifier.send).toHaveBeenCalledWith({
+			chatId: "123",
 			title: expect.objectContaining({ value: "Backend Engineer" }),
 			summary: expect.objectContaining({ value: "Node.js role" }),
 			company: expect.objectContaining({ value: "Acme" }),

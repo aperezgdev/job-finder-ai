@@ -12,11 +12,13 @@ export class JobSearchPremiseAnalyze {
 	) {}
 
 	async run({
+		chatId,
 		premise,
 		periodicity,
 		scheduledAtUtcHour,
 		minNotificationRating,
 	}: {
+		chatId: string;
 		premise: string;
 		periodicity: string;
 		scheduledAtUtcHour: string;
@@ -33,6 +35,7 @@ export class JobSearchPremiseAnalyze {
 		await this.eventBus.publish([
 			new JobSearchPremiseAnalyzed({
 				jobSearchId: jobSearchId.value,
+				chatId,
 				premise: jobSearchPremise.value,
 				filter: filter.value,
 				minNotificationRating: resolvedMinNotificationRating,

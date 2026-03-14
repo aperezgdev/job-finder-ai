@@ -2,6 +2,7 @@ import { DomainEvent } from "../../Shared/domain/event/DomainEvent";
 
 export class JobSearchCreated extends DomainEvent {
 	static EVENT_NAME = "job_search.created";
+	readonly chatId: string;
 	readonly premise: string;
 	readonly filter: string;
 	readonly periodicity: string;
@@ -10,6 +11,7 @@ export class JobSearchCreated extends DomainEvent {
 
 	constructor(payload: {
 		id: string;
+		chatId: string;
 		premise: string;
 		filter: string;
 		periodicity: string;
@@ -20,6 +22,7 @@ export class JobSearchCreated extends DomainEvent {
 			eventName: JobSearchCreated.EVENT_NAME,
 			aggregateId: payload.id,
 		});
+		this.chatId = payload.chatId;
 		this.premise = payload.premise;
 		this.filter = payload.filter;
 		this.periodicity = payload.periodicity;

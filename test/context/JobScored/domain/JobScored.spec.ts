@@ -16,6 +16,7 @@ import { JobWorkMode } from "../../../../src/context/Shared/domain/JobWorkMode";
 describe("JobScored aggregate", () => {
 	it("creates a score, records event and maps all primitives", () => {
 		const jobScored = JobScored.create(
+			"123",
 			new JobOfferId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
 			new JobTitle("Backend Engineer"),
 			new JobCompany("Acme"),
@@ -34,6 +35,7 @@ describe("JobScored aggregate", () => {
 		const primitives = jobScored.toPrimitives();
 
 		expect(primitives).toMatchObject({
+			chatId: "123",
 			jobOfferId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			title: "Backend Engineer",
 			company: "Acme",
@@ -61,6 +63,7 @@ describe("JobScored aggregate", () => {
 
 	it("maps optional location and salary as undefined when omitted", () => {
 		const jobScored = JobScored.create(
+			"123",
 			new JobOfferId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
 			new JobTitle("Backend Engineer"),
 			new JobCompany("Acme"),

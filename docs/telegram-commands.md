@@ -10,6 +10,21 @@ Command registration lives in `src/apps/telegram-bot/commands/index.ts`.
 
 Shows help and command syntax.
 
+### `/setProfile {currentRole} {yearsExperience} {prioritiesCsv} {sectorExperienceCsv} {targetRolesCsv} {targetWorkModesCsv} {targetSenioritiesCsv} {targetLocationsCsv} {skillsCsv} {minSalaryOrNone}`
+
+Creates or updates the instance candidate profile.
+
+- List fields are comma-separated (`a,b,c`) and normalized to lowercase.
+- Use `none` for empty lists or for no minimum salary.
+
+### `/profile`
+
+Shows the instance candidate profile.
+
+### `/deleteProfile`
+
+Deletes the instance candidate profile.
+
 ### `/createSearch {premise} {periodicity} {scheduledAtUtcHour} {minNotificationRating}`
 
 Creates a scheduled job search.
@@ -42,7 +57,7 @@ Lists scored jobs across all searches.
 
 ### `/scoredSearch {jobSearchId}`
 
-Lists scored jobs for a specific search.
+Lists scored jobs for one specific search.
 
 ### `/deleteSearch {jobSearchId}`
 
@@ -51,6 +66,12 @@ Deletes one search and unschedules its scheduler.
 ### `/deleteSearchAll`
 
 Deletes all searches and unschedules all schedulers.
+
+## Multi-tenant note
+
+- Commands are processed only for authorized chats (`TELEGRAM_CHAT_IDS`).
+- Each authorized chat/group is isolated (own profile, searches, scored jobs, and notifications).
+- Non-authorized chats receive the private/self-hosted message.
 
 ### `/dlq [limit]`
 
@@ -80,6 +101,21 @@ Registro de comandos en `src/apps/telegram-bot/commands/index.ts`.
 ### `/help`
 
 Muestra ayuda y sintaxis de comandos.
+
+### `/setProfile {currentRole} {yearsExperience} {prioritiesCsv} {sectorExperienceCsv} {targetRolesCsv} {targetWorkModesCsv} {targetSenioritiesCsv} {targetLocationsCsv} {skillsCsv} {minSalaryOrNone}`
+
+Crea o actualiza el perfil de candidato de la instancia.
+
+- Los campos de lista usan coma (`a,b,c`) y se normalizan a minúsculas.
+- Usa `none` para listas vacías o sin salario mínimo.
+
+### `/profile`
+
+Muestra el perfil de candidato de la instancia.
+
+### `/deleteProfile`
+
+Elimina el perfil de candidato de la instancia.
 
 ### `/createSearch {premise} {periodicity} {scheduledAtUtcHour} {minNotificationRating}`
 
@@ -122,6 +158,12 @@ Elimina una búsqueda y desprograma su scheduler.
 ### `/deleteSearchAll`
 
 Elimina todas las búsquedas y desprograma todas.
+
+## Nota multi-tenant
+
+- Los comandos solo se procesan para chats autorizados (`TELEGRAM_CHAT_IDS`).
+- Cada chat/grupo autorizado queda aislado (perfil, búsquedas, ofertas puntuadas y notificaciones propias).
+- Los chats no autorizados reciben el mensaje de bot privado/self-hosted.
 
 ### `/dlq [limit]`
 

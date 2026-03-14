@@ -13,22 +13,35 @@ export class JobScoredFinderBySearch {
 		private readonly logger: Logger,
 	) {}
 
-	async run({ jobSearchId }: { jobSearchId: string }): Promise<Array<JobScoredSummary>> {
+	async run({
+		jobSearchId,
+		chatId,
+	}: {
+		jobSearchId: string;
+		chatId: string;
+	}): Promise<Array<JobScoredSummary>> {
 		this.logger.info("JobScoredFinderBySearch - run - Params into", {
 			jobSearchId,
+			chatId,
 		});
 
-		const jobSearch = await this.jobSearchRepository.findById(jobSearchId);
+		const jobSearch = await this.jobSearchRepository.findById(
+			jobSearchId,
+			chatId,
+		);
 		if (!jobSearch) {
 			throw new ValidationError("Job search not found.");
 		}
 
 		const { premise } = jobSearch.toPrimitives();
-		const scoredJobs =
-			await this.jobScoredRepository.searchByJobSearchPremise(premise);
+		const scoredJobs = await this.jobScoredRepository.searchByJobSearchPremise(
+			premise,
+			chatId,
+		);
 
 		this.logger.info("JobScoredFinderBySearch - run - Scored jobs fetched", {
 			jobSearchId,
+			chatId,
 			premise,
 			count: scoredJobs.length,
 		});

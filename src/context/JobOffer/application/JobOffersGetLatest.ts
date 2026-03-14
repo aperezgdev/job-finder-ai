@@ -17,12 +17,14 @@ export class JobOffersGetLatest {
 	) {}
 
 	async run({
+		chatId,
 		jobSearchId,
 		premise,
 		searchFilter,
 		datePostedPeriod,
 		minNotificationRating,
 	}: {
+		chatId: string;
 		jobSearchId: JobSearchId;
 		premise: JobPremise;
 		searchFilter: JobSearchFilter;
@@ -47,13 +49,35 @@ export class JobOffersGetLatest {
 		});
 
 		const events = jobOffers.map((jobOffer) => {
+			const {
+				title,
+				summary,
+				company,
+				premise: offerPremise,
+				provider,
+				link,
+				workMode,
+				location,
+				salary,
+			} = jobOffer.toPrimitives();
+
 			return new JobOfferScrapped({
-				...jobOffer.toPrimitives(),
+				chatId,
+				title,
+				summary,
+				company,
+				premise: offerPremise,
+				provider,
+				link,
+				workMode,
+				location,
+				salary,
 				minNotificationRating: minNotificationRating.value,
 			});
 		});
 
 		const summaryEvent = new JobOffersScrapeSummaryReady({
+			chatId,
 			jobSearchId: jobSearchId.value,
 			premise: premise.value,
 			filter: searchFilter.value,

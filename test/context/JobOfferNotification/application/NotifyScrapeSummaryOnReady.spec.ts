@@ -20,6 +20,7 @@ describe("NotifyScrapeSummaryOnReady", () => {
 		const subscriber = new NotifyScrapeSummaryOnReady(sender as never);
 
 		const event = new JobOffersScrapeSummaryReady({
+			chatId: "123",
 			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			premise: "TypeScript backend jobs",
 			filter: "backend typescript remote",
@@ -30,6 +31,7 @@ describe("NotifyScrapeSummaryOnReady", () => {
 		await subscriber.on(event);
 
 		expect(sender.run).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: expect.objectContaining({
 				value: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			}),

@@ -10,11 +10,13 @@ describe("JobSearchUnscheduler", () => {
 		const useCase = new JobSearchUnscheduler(scheduler);
 
 		await useCase.run({
+			chatId: "123",
 			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 		});
 
 		expect(scheduler.unschedule).toHaveBeenCalledTimes(1);
 		expect(scheduler.unschedule).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: expect.objectContaining({
 				value: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			}),

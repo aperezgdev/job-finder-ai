@@ -5,6 +5,7 @@ import type { JobScoredRaterAI } from "../../../../src/context/JobScored/domain/
 import { JobScoredRating } from "../../../../src/context/JobScored/domain/JobScoredRating";
 import type { EventBus } from "../../../../src/context/Shared/domain/event/EventBus";
 import type { Logger } from "../../../../src/context/Shared/domain/Logger";
+import type { UserProfileRepository } from "../../../../src/context/UserProfile/domain/UserProfileRepository";
 
 describe("JobScoredRater", () => {
 	it("rates with AI and publishes JobScoredRated event", async () => {
@@ -26,11 +27,22 @@ describe("JobScoredRater", () => {
 			warn: jest.fn(),
 			error: jest.fn(),
 		};
+		const userProfileRepository: UserProfileRepository = {
+			findByChatId: jest.fn().mockResolvedValue(null),
+			save: jest.fn().mockResolvedValue(undefined),
+			deleteByChatId: jest.fn().mockResolvedValue(true),
+		};
 
-		const rater = new JobScoredRater(eventBus, raterAI, logger);
+		const rater = new JobScoredRater(
+			eventBus,
+			raterAI,
+			logger,
+			userProfileRepository,
+		);
 
 		await rater.run([
 			{
+				chatId: "123",
 				jobOfferId: "offer-id",
 				premise: "Remote backend jobs",
 				title: "Backend Engineer",
@@ -81,11 +93,22 @@ describe("JobScoredRater", () => {
 			warn: jest.fn(),
 			error: jest.fn(),
 		};
+		const userProfileRepository: UserProfileRepository = {
+			findByChatId: jest.fn().mockResolvedValue(null),
+			save: jest.fn().mockResolvedValue(undefined),
+			deleteByChatId: jest.fn().mockResolvedValue(true),
+		};
 
-		const rater = new JobScoredRater(eventBus, raterAI, logger);
+		const rater = new JobScoredRater(
+			eventBus,
+			raterAI,
+			logger,
+			userProfileRepository,
+		);
 
 		await rater.run([
 			{
+				chatId: "123",
 				jobOfferId: "offer-id-1",
 				premise: "Remote backend jobs",
 				title: "Backend Engineer",
@@ -99,6 +122,7 @@ describe("JobScoredRater", () => {
 				salary: 50000,
 			},
 			{
+				chatId: "123",
 				jobOfferId: "offer-id-2",
 				premise: "Remote backend jobs",
 				title: "Fullstack Engineer",

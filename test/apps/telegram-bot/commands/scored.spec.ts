@@ -28,6 +28,10 @@ describe("ScoredCommand", () => {
 			command.execute({ chatId: 123, text: "/scored" }),
 		).resolves.toBeUndefined();
 
+		expect(jobScoredFinderAll.run).toHaveBeenCalledWith({
+			chatId: "123",
+		});
+
 		expect(telegramBot.sendMessage).toHaveBeenCalledTimes(1);
 		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
 			123,
@@ -108,6 +112,7 @@ describe("ScoredSearchCommand", () => {
 
 		expect(jobScoredFinderBySearch.run).toHaveBeenCalledWith({
 			jobSearchId: "search-1",
+			chatId: "123",
 		});
 		expect(telegramBot.sendMessage).toHaveBeenCalledTimes(1);
 		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
@@ -137,6 +142,7 @@ describe("ScoredSearchCommand", () => {
 
 		expect(jobScoredFinderBySearch.run).toHaveBeenCalledWith({
 			jobSearchId: "search-1",
+			chatId: "123",
 		});
 		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
 			123,

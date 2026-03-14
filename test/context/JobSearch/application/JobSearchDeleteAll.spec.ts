@@ -15,6 +15,7 @@ describe("JobSearchDeleteAll", () => {
 	it("unschedules and deletes all job searches", async () => {
 		const firstSearch = JobSearch.fromPrimitives({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
+			chatId: "123",
 			premise: new JobSearchPremise("TypeScript backend jobs"),
 			filter: new JobSearchFilter("backend typescript remote"),
 			periodicity: new JobSearchPeriodicity("weekly"),
@@ -23,6 +24,7 @@ describe("JobSearchDeleteAll", () => {
 		});
 		const secondSearch = JobSearch.fromPrimitives({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2b"),
+			chatId: "123",
 			premise: new JobSearchPremise("Go backend jobs"),
 			filter: new JobSearchFilter("backend golang remote"),
 			periodicity: new JobSearchPeriodicity("daily"),
@@ -33,9 +35,11 @@ describe("JobSearchDeleteAll", () => {
 		const repository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(null),
-			searchAll: jest.fn().mockResolvedValue([firstSearch, secondSearch]),
+			searchAllByChatId: jest
+				.fn()
+				.mockResolvedValue([firstSearch, secondSearch]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const eventBus: EventBus = {
 			publish: jest.fn().mockResolvedValue(undefined),
@@ -48,9 +52,10 @@ describe("JobSearchDeleteAll", () => {
 		};
 
 		const useCase = new JobSearchDeleteAll(repository, eventBus, logger);
-		const deletedCount = await useCase.run();
+		const deletedCount = await useCase.run({ chatId: "123" });
 
-		expect(repository.deleteAll).toHaveBeenCalledTimes(1);
+		expect(repository.searchAllByChatId).toHaveBeenCalledWith("123");
+		expect(repository.deleteAllByChatId).toHaveBeenCalledWith("123");
 		expect(eventBus.publish).toHaveBeenCalledTimes(1);
 		expect(eventBus.publish).toHaveBeenCalledWith([
 			expect.any(JobSearchDeleted),

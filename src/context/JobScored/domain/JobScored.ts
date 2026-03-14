@@ -17,6 +17,7 @@ import type { JobScoredRating } from "./JobScoredRating";
 
 export class JobScored extends AggregateRoot {
 	private readonly id: JobScoredId;
+	private readonly chatId: string;
 	private readonly jobOfferId: JobOfferId;
 	private readonly title: JobTitle;
 	private readonly company: JobCompany;
@@ -33,6 +34,7 @@ export class JobScored extends AggregateRoot {
 
 	constructor(
 		id: JobScoredId,
+		chatId: string,
 		jobOfferId: JobOfferId,
 		title: JobTitle,
 		company: JobCompany,
@@ -49,6 +51,7 @@ export class JobScored extends AggregateRoot {
 	) {
 		super();
 		this.id = id;
+		this.chatId = chatId;
 		this.jobOfferId = jobOfferId;
 		this.title = title;
 		this.company = company;
@@ -65,6 +68,7 @@ export class JobScored extends AggregateRoot {
 	}
 
 	static create(
+		chatId: string,
 		jobOfferId: JobOfferId,
 		title: JobTitle,
 		company: JobCompany,
@@ -82,6 +86,7 @@ export class JobScored extends AggregateRoot {
 		const id = JobScoredId.random();
 		const jobScored = new JobScored(
 			id,
+			chatId,
 			jobOfferId,
 			title,
 			company,
@@ -100,6 +105,7 @@ export class JobScored extends AggregateRoot {
 		jobScored.record(
 			new JobScoredCreated({
 				id: jobScored.id.value,
+				chatId: jobScored.chatId,
 				title: jobScored.title.value,
 				company: jobScored.company.value,
 				summary: jobScored.summary.value,
@@ -120,6 +126,7 @@ export class JobScored extends AggregateRoot {
 
 	toPrimitives(): {
 		id: string;
+		chatId: string;
 		jobOfferId: string;
 		title: string;
 		company: string;
@@ -136,6 +143,7 @@ export class JobScored extends AggregateRoot {
 	} {
 		return {
 			id: this.id.value,
+			chatId: this.chatId,
 			jobOfferId: this.jobOfferId.value,
 			title: this.title.value,
 			company: this.company.value,

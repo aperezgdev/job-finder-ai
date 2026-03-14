@@ -15,6 +15,7 @@ export class JobOfferNotificationSender {
 	constructor(private readonly notifier: JobOfferNotifier) {}
 
 	async run({
+		chatId,
 		title,
 		summary,
 		company,
@@ -27,6 +28,7 @@ export class JobOfferNotificationSender {
 		comment,
 		highlights,
 	}: {
+		chatId: string;
 		jobScoredId: string;
 		title: string;
 		summary: string;
@@ -41,6 +43,7 @@ export class JobOfferNotificationSender {
 		workMode?: string;
 	}): Promise<void> {
 		await this.notifier.send({
+			chatId,
 			title: new JobTitle(title),
 			summary: new JobSummary(summary),
 			company: new JobCompany(company),

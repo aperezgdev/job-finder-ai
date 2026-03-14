@@ -41,7 +41,9 @@ export class SearchesCommand extends TelegramCommand {
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {
-		const jobSearches = await this.dependencies.jobSearchFinderAll.run();
+		const jobSearches = await this.dependencies.jobSearchFinderAll.run({
+			chatId: String(chatId),
+		});
 
 		if (jobSearches.length === 0) {
 			await this.dependencies.telegramBot.sendMessage(

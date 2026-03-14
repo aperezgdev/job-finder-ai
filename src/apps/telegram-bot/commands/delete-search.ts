@@ -32,7 +32,10 @@ export class DeleteSearchCommand extends TelegramCommandWithArgs<{
 		chatId,
 		args,
 	}: TypedTelegramCommandRunContext<{ jobSearchId: string }>): Promise<void> {
-		await this.dependencies.jobSearchDelete.run(args);
+		await this.dependencies.jobSearchDelete.run({
+			jobSearchId: args.jobSearchId,
+			chatId: String(chatId),
+		});
 		await this.dependencies.telegramBot.sendMessage(
 			chatId,
 			"Job search deleted successfully.",
@@ -55,7 +58,9 @@ export class DeleteAllSearchesCommand extends TelegramCommand {
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {
-		const deletedCount = await this.dependencies.jobSearchDeleteAll.run();
+		const deletedCount = await this.dependencies.jobSearchDeleteAll.run({
+			chatId: String(chatId),
+		});
 		await this.dependencies.telegramBot.sendMessage(
 			chatId,
 			`Deleted ${deletedCount} scheduled job search(es).`,

@@ -8,10 +8,14 @@ export class JobSearchFinderAll {
 		private readonly logger: Logger,
 	) {}
 
-	async run(): Promise<Array<JobSearch>> {
-		this.logger.info("JobSearchFinderAll - run - Fetching scheduled searches");
-		const jobSearches = await this.jobSearchRepository.searchAll();
+	async run({ chatId }: { chatId: string }): Promise<Array<JobSearch>> {
+		this.logger.info("JobSearchFinderAll - run - Fetching scheduled searches", {
+			chatId,
+		});
+		const jobSearches =
+			await this.jobSearchRepository.searchAllByChatId(chatId);
 		this.logger.info("JobSearchFinderAll - run - Scheduled searches fetched", {
+			chatId,
 			count: jobSearches.length,
 		});
 

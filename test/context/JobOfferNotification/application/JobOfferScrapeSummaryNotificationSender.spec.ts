@@ -13,6 +13,7 @@ describe("JobOfferScrapeSummaryNotificationSender", () => {
 		const sender = new JobOfferScrapeSummaryNotificationSender(notifier);
 
 		await sender.run({
+			chatId: "123",
 			jobSearchId: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
 			premise: new JobPremise("TypeScript backend jobs"),
 			totalScraped: 18,
@@ -20,6 +21,7 @@ describe("JobOfferScrapeSummaryNotificationSender", () => {
 
 		expect(notifier.sendScrapeSummary).toHaveBeenCalledTimes(1);
 		expect(notifier.sendScrapeSummary).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
 			premise: "TypeScript backend jobs",
 			totalScraped: 18,

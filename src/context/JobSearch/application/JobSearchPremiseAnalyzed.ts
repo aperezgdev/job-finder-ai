@@ -3,6 +3,7 @@ import { AplicationEvent } from "../../Shared/application/AplicationEvent";
 export class JobSearchPremiseAnalyzed extends AplicationEvent {
 	static EVENT_NAME = "job_search_premise_analyzed";
 	readonly jobSearchId: string;
+	readonly chatId: string;
 	readonly premise: string;
 	readonly filter: string;
 	readonly minNotificationRating: number;
@@ -11,6 +12,7 @@ export class JobSearchPremiseAnalyzed extends AplicationEvent {
 
 	constructor(payload: {
 		jobSearchId: string;
+		chatId: string;
 		premise: string;
 		filter: string;
 		minNotificationRating: number;
@@ -21,6 +23,7 @@ export class JobSearchPremiseAnalyzed extends AplicationEvent {
 			eventName: JobSearchPremiseAnalyzed.EVENT_NAME,
 		});
 		this.jobSearchId = payload.jobSearchId;
+		this.chatId = payload.chatId;
 		this.premise = payload.premise;
 		this.periodicity = payload.periodicity;
 		this.scheduledAtUtcHour = payload.scheduledAtUtcHour;

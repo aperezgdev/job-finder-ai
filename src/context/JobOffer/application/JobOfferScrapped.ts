@@ -2,6 +2,7 @@ import { AplicationEvent } from "../../Shared/application/AplicationEvent";
 
 export class JobOfferScrapped extends AplicationEvent {
 	static EVENT_NAME = "job_offer_scrapped";
+	readonly chatId: string;
 	readonly title: string;
 	readonly summary: string;
 	readonly company: string;
@@ -14,6 +15,7 @@ export class JobOfferScrapped extends AplicationEvent {
 	readonly minNotificationRating: number;
 
 	constructor(payload: {
+		chatId: string;
 		title: string;
 		summary: string;
 		company: string;
@@ -28,6 +30,7 @@ export class JobOfferScrapped extends AplicationEvent {
 		super({
 			eventName: JobOfferScrapped.EVENT_NAME,
 		});
+		this.chatId = payload.chatId;
 		this.title = payload.title;
 		this.summary = payload.summary;
 		this.company = payload.company;

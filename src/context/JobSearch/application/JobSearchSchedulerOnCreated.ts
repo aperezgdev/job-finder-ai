@@ -20,6 +20,7 @@ export class JobSearchSchedulerOnCreated
 
 	async on(event: JobSearchCreated): Promise<void> {
 		await this.scheduler.schedule({
+			chatId: event.chatId,
 			jobSearchId: new JobSearchId(event.aggregateId),
 			premise: new JobSearchPremise(event.premise),
 			filter: new JobSearchFilter(event.filter),

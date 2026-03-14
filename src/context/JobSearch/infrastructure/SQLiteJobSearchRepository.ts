@@ -18,6 +18,7 @@ export class SQLiteJobSearchRepository
 	private toDomain(entity: JobSearchEntity): JobSearch {
 		return JobSearch.fromPrimitives({
 			id: new JobSearchId(entity.id),
+			chatId: entity.chatId,
 			premise: new JobSearchPremise(entity.premise),
 			filter: new JobSearchFilter(entity.filter),
 			periodicity: new JobSearchPeriodicity(entity.periodicity),
@@ -33,6 +34,7 @@ export class SQLiteJobSearchRepository
 	async save(jobSearch: JobSearch): Promise<void> {
 		const {
 			id,
+			chatId,
 			premise,
 			filter,
 			periodicity,
@@ -41,6 +43,7 @@ export class SQLiteJobSearchRepository
 		} = jobSearch.toPrimitives();
 		const entity = new JobSearchEntity(
 			id,
+			chatId,
 			premise,
 			filter,
 			periodicity,
@@ -50,8 +53,14 @@ export class SQLiteJobSearchRepository
 		await this.merge(entity);
 	}
 
-	async findById(jobSearchId: string): Promise<JobSearch | null> {
-		const entity = await this.getCollection().findOneBy({ id: jobSearchId });
+	async findById(
+		jobSearchId: string,
+		chatId: string,
+	): Promise<JobSearch | null> {
+		const entity = await this.getCollection().findOneBy({
+			id: jobSearchId,
+			chatId,
+		});
 		if (!entity) {
 			return null;
 		}
@@ -59,8 +68,11 @@ export class SQLiteJobSearchRepository
 		return this.toDomain(entity);
 	}
 
-	async searchAll(): Promise<Array<JobSearch>> {
+	async searchAllByChatId(chatId: string): Promise<Array<JobSearch>> {
 		const entities = await this.getCollection().find({
+			where: {
+				chatId,
+			},
 			order: {
 				premise: "ASC",
 			},
@@ -69,11 +81,11 @@ export class SQLiteJobSearchRepository
 		return entities.map((entity) => this.toDomain(entity));
 	}
 
-	async deleteById(jobSearchId: string): Promise<void> {
-		await this.getCollection().delete({ id: jobSearchId });
+	async deleteById(jobSearchId: string, chatId: string): Promise<void> {
+		await this.getCollection().delete({ id: jobSearchId, chatId });
 	}
 
-	async deleteAll(): Promise<void> {
-		await this.getCollection().clear();
+	async deleteAllByChatId(chatId: string): Promise<void> {
+		await this.getCollection().delete({ chatId });
 	}
 }

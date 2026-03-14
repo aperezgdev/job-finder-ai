@@ -24,6 +24,7 @@ export class JobScoredCreator {
 	) {}
 
 	async run({
+		chatId,
 		jobOfferId,
 		title,
 		company,
@@ -38,6 +39,7 @@ export class JobScoredCreator {
 		location,
 		salary,
 	}: {
+		chatId: string;
 		jobOfferId: string;
 		title: string;
 		company: string;
@@ -62,6 +64,7 @@ export class JobScoredCreator {
 		});
 
 		const jobScored = JobScored.create(
+			chatId,
 			new JobOfferId(jobOfferId),
 			new JobTitle(title),
 			new JobCompany(company),
@@ -77,7 +80,7 @@ export class JobScoredCreator {
 			salary ? new JobSalary(salary) : undefined,
 		);
 
-		await this.jobScoredRepository.save(jobScored);
+		await this.jobScoredRepository.save(chatId, jobScored);
 		this.logger.info("JobScoredCreator - run - Job scored persisted", {
 			jobOfferId,
 			rating,

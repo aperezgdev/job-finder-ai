@@ -6,15 +6,18 @@ export class JobOfferScrapeSummaryNotificationSender {
 	constructor(private readonly notifier: JobOfferNotifier) {}
 
 	async run({
+		chatId,
 		jobSearchId,
 		premise,
 		totalScraped,
 	}: {
+		chatId: string;
 		jobSearchId: JobSearchId;
 		premise: JobPremise;
 		totalScraped: number;
 	}): Promise<void> {
 		await this.notifier.sendScrapeSummary({
+			chatId,
 			jobSearchId: jobSearchId.value,
 			premise: premise.value,
 			totalScraped,

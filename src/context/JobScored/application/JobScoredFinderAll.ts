@@ -10,10 +10,13 @@ export class JobScoredFinderAll {
 		private readonly logger: Logger,
 	) {}
 
-	async run(): Promise<Array<JobScoredSummary>> {
-		this.logger.info("JobScoredFinderAll - run - Fetching scored jobs");
-		const jobScoreds = await this.jobScoredRepository.searchAll();
+	async run({ chatId }: { chatId: string }): Promise<Array<JobScoredSummary>> {
+		this.logger.info("JobScoredFinderAll - run - Fetching scored jobs", {
+			chatId,
+		});
+		const jobScoreds = await this.jobScoredRepository.searchAllByChatId(chatId);
 		this.logger.info("JobScoredFinderAll - run - Scored jobs fetched", {
+			chatId,
 			count: jobScoreds.length,
 		});
 

@@ -82,7 +82,9 @@ export class ScoredCommand extends TelegramCommand {
 		chatId,
 	}: TypedTelegramCommandRunContext<Record<string, never>>): Promise<void> {
 		try {
-			const jobScoreds = await this.dependencies.jobScoredFinderAll.run();
+			const jobScoreds = await this.dependencies.jobScoredFinderAll.run({
+				chatId: String(chatId),
+			});
 			if (jobScoreds.length === 0) {
 				await this.dependencies.telegramBot.sendMessage(
 					chatId,
@@ -129,6 +131,7 @@ export class ScoredSearchCommand extends TelegramCommandWithArgs<{
 		const { jobSearchId } = args;
 		const jobScoreds = await this.dependencies.jobScoredFinderBySearch.run({
 			jobSearchId,
+			chatId: String(chatId),
 		});
 
 		if (jobScoreds.length === 0) {

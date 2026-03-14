@@ -10,17 +10,22 @@ export class JobSearchDeleteAll {
 		private readonly logger: Logger,
 	) {}
 
-	async run(): Promise<number> {
-		this.logger.info("JobSearchDeleteAll - run - Removing all job searches");
-		const jobSearches = await this.jobSearchRepository.searchAll();
+	async run({ chatId }: { chatId: string }): Promise<number> {
+		this.logger.info("JobSearchDeleteAll - run - Removing all job searches", {
+			chatId,
+		});
+		const jobSearches =
+			await this.jobSearchRepository.searchAllByChatId(chatId);
 		const events = jobSearches.map(
-			(jobSearch) => new JobSearchDeleted({ id: jobSearch.toPrimitives().id }),
+			(jobSearch) =>
+				new JobSearchDeleted({ id: jobSearch.toPrimitives().id, chatId }),
 		);
 
-		await this.jobSearchRepository.deleteAll();
+		await this.jobSearchRepository.deleteAllByChatId(chatId);
 		await this.eventBus.publish(events);
 
 		this.logger.info("JobSearchDeleteAll - run - Job searches removed", {
+			chatId,
 			count: jobSearches.length,
 		});
 

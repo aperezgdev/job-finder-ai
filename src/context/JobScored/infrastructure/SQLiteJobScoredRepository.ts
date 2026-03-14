@@ -30,7 +30,7 @@ export class SQLiteJobScoredRepository
 		};
 	}
 
-	async save(jobScored: JobScored): Promise<void> {
+	async save(chatId: string, jobScored: JobScored): Promise<void> {
 		const {
 			id,
 			jobOfferId,
@@ -48,6 +48,7 @@ export class SQLiteJobScoredRepository
 		} = jobScored.toPrimitives();
 		const entity = new JobScoredEntity(
 			id,
+			chatId,
 			jobOfferId,
 			title,
 			company,
@@ -64,8 +65,11 @@ export class SQLiteJobScoredRepository
 		await this.merge(entity);
 	}
 
-	async searchAll(): Promise<Array<JobScoredSummary>> {
+	async searchAllByChatId(chatId: string): Promise<Array<JobScoredSummary>> {
 		const entities = await this.getCollection().find({
+			where: {
+				chatId,
+			},
 			order: {
 				rating: "DESC",
 				title: "ASC",
@@ -77,15 +81,17 @@ export class SQLiteJobScoredRepository
 
 	async searchByJobSearchPremise(
 		premise: string,
+		chatId: string,
 	): Promise<Array<JobScoredSummary>> {
 		const entities = await this.getCollection()
 			.createQueryBuilder("job_scored")
 			.innerJoin(
 				"job_offers",
 				"job_offers",
-				"job_offers.id = job_scored.jobOfferId",
+				"job_offers.id = job_scored.jobOfferId AND job_offers.chatId = job_scored.chatId",
 			)
 			.where("job_offers.premise = :premise", { premise })
+			.andWhere("job_scored.chatId = :chatId", { chatId })
 			.orderBy("job_scored.rating", "DESC")
 			.addOrderBy("job_scored.title", "ASC")
 			.getMany();

@@ -45,7 +45,9 @@ Edit `.env` and define at least:
 
 - `OPENAI_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
+- `TELEGRAM_CHAT_IDS` (CSV with authorized chat/group ids)
+
+Each chat/group keeps isolated data (searches, profile, scored jobs, notifications).
 
 ### 3) Run
 
@@ -144,7 +146,9 @@ Edita `.env` y define al menos:
 
 - `OPENAI_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`
+- `TELEGRAM_CHAT_IDS` (CSV con ids de chats/grupos autorizados)
+
+Cada chat/grupo mantiene datos aislados (búsquedas, perfil, ofertas puntuadas y notificaciones).
 
 ### 3) Ejecutar
 

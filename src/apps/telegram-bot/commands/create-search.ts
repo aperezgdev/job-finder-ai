@@ -38,6 +38,7 @@ export class CreateSearchCommand extends TelegramCommandWithArgs<{
 		const minNotificationRating = Number(args.minNotificationRating);
 
 		await this.dependencies.jobSearchPremiseAnalyze.run({
+			chatId: String(chatId),
 			premise: args.premise,
 			periodicity: args.periodicity,
 			scheduledAtUtcHour: args.scheduledAtUtcHour,

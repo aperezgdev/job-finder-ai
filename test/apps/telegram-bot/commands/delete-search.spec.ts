@@ -22,6 +22,7 @@ describe("DeleteSearchCommand", () => {
 		});
 
 		expect(jobSearchDelete.run).toHaveBeenCalledWith({
+			chatId: "123",
 			jobSearchId: "0f8fad5b-d9cb-469f-a165-70867728950e",
 		});
 		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
@@ -69,7 +70,9 @@ describe("DeleteAllSearchesCommand", () => {
 
 		await command.execute({ chatId: 123, text: "/deleteSearchAll" });
 
-		expect(jobSearchDeleteAll.run).toHaveBeenCalledTimes(1);
+		expect(jobSearchDeleteAll.run).toHaveBeenCalledWith({
+			chatId: "123",
+		});
 		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
 			123,
 			"Deleted 3 scheduled job search(es).",

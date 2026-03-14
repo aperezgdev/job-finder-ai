@@ -16,6 +16,7 @@ describe("JobSearchDelete", () => {
 	it("deletes one job search and publishes deletion event", async () => {
 		const jobSearch = JobSearch.fromPrimitives({
 			id: new JobSearchId("018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a"),
+			chatId: "123",
 			premise: new JobSearchPremise("TypeScript backend jobs"),
 			filter: new JobSearchFilter("backend typescript remote"),
 			periodicity: new JobSearchPeriodicity("weekly"),
@@ -25,9 +26,9 @@ describe("JobSearchDelete", () => {
 		const repository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(jobSearch),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const eventBus: EventBus = {
 			publish: jest.fn().mockResolvedValue(undefined),
@@ -41,13 +42,18 @@ describe("JobSearchDelete", () => {
 
 		const useCase = new JobSearchDelete(repository, eventBus, logger);
 
-		await useCase.run({ jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a" });
+		await useCase.run({
+			jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			chatId: "123",
+		});
 
 		expect(repository.findById).toHaveBeenCalledWith(
 			"018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			"123",
 		);
 		expect(repository.deleteById).toHaveBeenCalledWith(
 			"018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+			"123",
 		);
 		expect(eventBus.publish).toHaveBeenCalledWith([
 			expect.any(JobSearchDeleted),
@@ -58,9 +64,9 @@ describe("JobSearchDelete", () => {
 		const repository: JobSearchRepository = {
 			save: jest.fn().mockResolvedValue(undefined),
 			findById: jest.fn().mockResolvedValue(null),
-			searchAll: jest.fn().mockResolvedValue([]),
+			searchAllByChatId: jest.fn().mockResolvedValue([]),
 			deleteById: jest.fn().mockResolvedValue(undefined),
-			deleteAll: jest.fn().mockResolvedValue(undefined),
+			deleteAllByChatId: jest.fn().mockResolvedValue(undefined),
 		};
 		const eventBus: EventBus = {
 			publish: jest.fn().mockResolvedValue(undefined),
@@ -75,7 +81,10 @@ describe("JobSearchDelete", () => {
 		const useCase = new JobSearchDelete(repository, eventBus, logger);
 
 		await expect(
-			useCase.run({ jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a" }),
+			useCase.run({
+				jobSearchId: "018f6b5a-6b70-7cc6-b79f-4f88db0d1e2a",
+				chatId: "123",
+			}),
 		).rejects.toBeInstanceOf(ValidationError);
 		expect(eventBus.publish).not.toHaveBeenCalled();
 		expect(repository.deleteById).not.toHaveBeenCalled();

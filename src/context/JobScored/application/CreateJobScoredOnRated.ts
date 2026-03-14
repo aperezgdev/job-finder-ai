@@ -12,6 +12,7 @@ export class CreateJobScoredOnRated implements EventSubscriber<JobScoredRated> {
 
 	on(event: JobScoredRated): Promise<void> {
 		return this.jobScoredCreator.run({
+			chatId: event.chatId,
 			jobOfferId: event.jobOfferId,
 			title: event.title,
 			company: event.company,

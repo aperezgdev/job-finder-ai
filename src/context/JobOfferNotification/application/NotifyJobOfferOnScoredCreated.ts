@@ -12,12 +12,13 @@ export class NotifyJobOfferOnScoredCreated
 		return [JobScoredCreated];
 	}
 
-	on(event: JobScoredCreated): Promise<void> {
+	async on(event: JobScoredCreated): Promise<void> {
 		if (event.rating < event.minNotificationRating) {
-			return Promise.resolve();
+			return;
 		}
 
-		return this.sender.run({
+		await this.sender.run({
+			chatId: event.chatId,
 			jobScoredId: event.aggregateId,
 			title: event.title,
 			summary: event.summary,

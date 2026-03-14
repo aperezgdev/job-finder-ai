@@ -16,11 +16,13 @@ flowchart TD
 	JOR --> DB
 	JOC -->|JobOfferCreated| JSR[RateJobScoredOnOfferCreated]
 	JSR --> JSRUC[JobScoredRater]
+	UP[(UserProfileRepository)] --> JSRUC
 	JSRUC -->|JobScoredRated| JSC[CreateJobScoredOnRated]
 	JSC --> JSCUC[JobScoredCreator]
 	JSCUC -->|Save| JSCR[(JobScoredRepository)]
 	JSCR --> DB
 	JSCUC -->|JobScoredCreated| JON[NotifyJobOfferOnScoredCreated]
+	UP --> JON
 	JON --> JONUC[JobOfferNotificationSender]
 	JGL -->|JobOffersScrapeSummaryReady| NSR[NotifyScrapeSummaryOnReady]
 	NSR --> JONUC
@@ -34,4 +36,6 @@ Notes:
 - Periodicity mapping: `daily` (24h), `weekly` (7d), `biweekly` (14d), `monthly` (30d).
 - Unschedule operation uses `removeJobScheduler(jobSearchId)`.
 - `JobOffersGetLatest` publishes `JobOfferScrapped[]` and one `JobOffersScrapeSummaryReady` event per execution.
-- `NotifyScrapeSummaryOnReady` computes how many scraped links reached `minNotificationRating` and sends a summary notification.
+- `JobScoredRater` enriches AI scoring input with a singleton candidate profile snapshot when `UserProfile` exists.
+- `NotifyJobOfferOnScoredCreated` sends notifications when score threshold is met.
+- Telegram destination is fixed by `TELEGRAM_CHAT_ID` (single-tenant self-hosted instance).

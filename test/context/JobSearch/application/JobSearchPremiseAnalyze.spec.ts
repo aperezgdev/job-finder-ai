@@ -18,6 +18,7 @@ describe("JobSearchPremiseAnalyze", () => {
 		const useCase = new JobSearchPremiseAnalyze(analyzer, eventBus);
 
 		await useCase.run({
+			chatId: "123",
 			premise: "Remote backend jobs",
 			periodicity: "weekly",
 			scheduledAtUtcHour: "09:30",
@@ -29,6 +30,7 @@ describe("JobSearchPremiseAnalyze", () => {
 		expect(eventBus.publish).toHaveBeenCalledWith([
 			expect.objectContaining({
 				eventName: "job_search_premise_analyzed",
+				chatId: "123",
 				premise: "Remote backend jobs",
 				filter: "backend remote",
 				periodicity: "weekly",
@@ -52,6 +54,7 @@ describe("JobSearchPremiseAnalyze", () => {
 		const useCase = new JobSearchPremiseAnalyze(analyzer, eventBus);
 
 		await useCase.run({
+			chatId: "123",
 			premise: "Remote backend jobs",
 			periodicity: "daily",
 			scheduledAtUtcHour: "08:00",

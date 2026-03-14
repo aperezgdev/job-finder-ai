@@ -6,6 +6,9 @@ export class JobSearchEntity {
 	id!: string;
 
 	@Column("text")
+	chatId!: string;
+
+	@Column("text")
 	premise!: string;
 
 	@Column("text")
@@ -22,6 +25,7 @@ export class JobSearchEntity {
 
 	constructor(
 		id: string,
+		chatId: string,
 		premise: string,
 		filter: string,
 		periodicity: string,
@@ -29,6 +33,7 @@ export class JobSearchEntity {
 		minNotificationRating: number,
 	) {
 		this.id = id;
+		this.chatId = chatId;
 		this.premise = premise;
 		this.filter = filter;
 		this.periodicity = periodicity;

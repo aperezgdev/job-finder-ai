@@ -16,6 +16,7 @@ export class JobSearchCreator {
 
 	async run({
 		id,
+		chatId,
 		premise,
 		filter,
 		periodicity,
@@ -23,6 +24,7 @@ export class JobSearchCreator {
 		minNotificationRating,
 	}: {
 		id: string;
+		chatId: string;
 		premise: string;
 		filter: string;
 		periodicity: string;
@@ -35,6 +37,7 @@ export class JobSearchCreator {
 
 		const jobSearch = JobSearch.create({
 			id: new JobSearchId(id),
+			chatId,
 			premise: new JobSearchPremise(premise),
 			filter: new JobSearchFilter(filter),
 			periodicity: jobSearchPeriodicity,

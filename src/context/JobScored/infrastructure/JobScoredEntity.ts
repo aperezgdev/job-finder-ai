@@ -6,6 +6,9 @@ export class JobScoredEntity {
 	id!: string;
 
 	@Column("text")
+	chatId!: string;
+
+	@Column("text")
 	jobOfferId!: string;
 
 	@Column("text")
@@ -43,6 +46,7 @@ export class JobScoredEntity {
 
 	constructor(
 		id: string,
+		chatId: string,
 		jobOfferId: string,
 		title: string,
 		company: string,
@@ -57,6 +61,7 @@ export class JobScoredEntity {
 		salary?: number,
 	) {
 		this.id = id;
+		this.chatId = chatId;
 		this.jobOfferId = jobOfferId;
 		this.title = title;
 		this.company = company;

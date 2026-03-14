@@ -16,6 +16,7 @@ describe("NotifyJobOfferOnScoredCreated", () => {
 		const subscriber = new NotifyJobOfferOnScoredCreated(sender as never);
 		const event = new JobScoredCreated({
 			id: "score-id",
+			chatId: "123",
 			title: "Backend Engineer",
 			summary: "Node.js role",
 			company: "Acme",
@@ -42,6 +43,7 @@ describe("NotifyJobOfferOnScoredCreated", () => {
 		const subscriber = new NotifyJobOfferOnScoredCreated(sender as never);
 		const event = new JobScoredCreated({
 			id: "score-id",
+			chatId: "123",
 			title: "Backend Engineer",
 			summary: "Node.js role",
 			company: "Acme",
@@ -60,6 +62,7 @@ describe("NotifyJobOfferOnScoredCreated", () => {
 
 		expect(sender.run).toHaveBeenCalledTimes(1);
 		expect(sender.run).toHaveBeenCalledWith({
+			chatId: "123",
 			jobScoredId: "score-id",
 			title: "Backend Engineer",
 			summary: "Node.js role",
