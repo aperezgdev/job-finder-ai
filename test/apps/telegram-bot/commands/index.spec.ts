@@ -167,6 +167,26 @@ describe("registerTelegramCommands", () => {
 		);
 	});
 
+	it("routes /getProfile alias to profile command", async () => {
+		const { messageHandler, telegramBot, userProfileFinder } = setup();
+
+		await expect(
+			messageHandler?.({ chat: { id: 123 }, text: "/getProfile" }),
+		).resolves.toBeUndefined();
+
+		expect(userProfileFinder.run).toHaveBeenCalledWith({
+			chatId: "123",
+		});
+		expect(telegramBot.sendMessage).toHaveBeenCalledWith(
+			123,
+			[
+				"No candidate profile found yet.",
+				"Use /setProfile to create it step by step.",
+				"Tip: You can use /cancel to stop an active /setProfile flow.",
+			].join("\n"),
+		);
+	});
+
 	it("starts /setProfile guided flow", async () => {
 		const { messageHandler, telegramBot, userProfileUpsert } = setup();
 

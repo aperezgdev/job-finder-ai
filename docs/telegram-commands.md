@@ -22,7 +22,7 @@ Creates or updates the instance candidate profile.
 
 Cancels an active `/setProfile` flow.
 
-### `/profile`
+### `/profile` | `/getProfile` | `/perfil`
 
 Shows the instance candidate profile.
 
@@ -119,7 +119,7 @@ Crea o actualiza el perfil de candidato de la instancia.
 
 Cancela un flujo activo de `/setProfile`.
 
-### `/profile`
+### `/profile` | `/getProfile` | `/perfil`
 
 Muestra el perfil de candidato de la instancia.
 

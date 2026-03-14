@@ -15,7 +15,7 @@ const EXPECTED_HELP_MESSAGE = [
 	"/setProfileComment {comment}",
 	"Set an additional profile comment used by AI scoring. Use 'none' to clear it.",
 	"",
-	"/profile",
+	"/profile | /getProfile | /perfil",
 	"Show your candidate profile.",
 	"",
 	"/deleteProfile",
