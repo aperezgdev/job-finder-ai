@@ -1,6 +1,7 @@
 import type TelegramBot from "node-telegram-bot-api";
 import type { JobSearchDelete } from "../../../context/JobSearch/application/JobSearchDelete";
 import type { JobSearchDeleteAll } from "../../../context/JobSearch/application/JobSearchDeleteAll";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import {
 	TelegramCommand,
 	type TelegramCommandRunContext,
@@ -18,10 +19,11 @@ export class DeleteSearchCommand extends TelegramCommandWithArgs<{
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobSearchDelete: JobSearchDelete;
 		},
 	) {
-		super(DELETE_SEARCH_COMMAND, dependencies.telegramBot);
+		super(DELETE_SEARCH_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected commandTemplate(): string {
@@ -51,10 +53,15 @@ export class DeleteAllSearchesCommand extends TelegramCommand {
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobSearchDeleteAll: JobSearchDeleteAll;
 		},
 	) {
-		super(DELETE_ALL_SEARCHES_COMMAND, dependencies.telegramBot);
+		super(
+			DELETE_ALL_SEARCHES_COMMAND,
+			dependencies.telegramBot,
+			dependencies.logger,
+		);
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {

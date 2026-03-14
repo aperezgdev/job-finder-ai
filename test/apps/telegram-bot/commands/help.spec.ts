@@ -51,7 +51,15 @@ describe("HelpCommand", () => {
 		const telegramBot = {
 			sendMessage: jest.fn().mockResolvedValue(undefined),
 		};
-		const command = new HelpCommand(telegramBot as never);
+		const logger = {
+			info: jest.fn(),
+			warn: jest.fn(),
+			error: jest.fn(),
+		};
+		const command = new HelpCommand({
+			telegramBot: telegramBot as never,
+			logger: logger as never,
+		});
 
 		await command.execute({ chatId: 123, text: "/help" });
 

@@ -1,6 +1,12 @@
 import { CreateSearchCommand } from "../../../../src/apps/telegram-bot/commands/create-search";
 
 describe("CreateSearchCommand", () => {
+	const logger = {
+		info: jest.fn(),
+		warn: jest.fn(),
+		error: jest.fn(),
+	};
+
 	it("parses command arguments and delegates to use case", async () => {
 		const telegramBot = {
 			sendMessage: jest.fn().mockResolvedValue(undefined),
@@ -10,6 +16,7 @@ describe("CreateSearchCommand", () => {
 		};
 		const command = new CreateSearchCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			jobSearchPremiseAnalyze: jobSearchPremiseAnalyze as never,
 		});
 
@@ -40,6 +47,7 @@ describe("CreateSearchCommand", () => {
 		};
 		const command = new CreateSearchCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			jobSearchPremiseAnalyze: jobSearchPremiseAnalyze as never,
 		});
 

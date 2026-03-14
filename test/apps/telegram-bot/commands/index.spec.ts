@@ -55,9 +55,15 @@ describe("registerTelegramCommands", () => {
 		const deadLetterQueue = {
 			getJobs: jest.fn().mockResolvedValue([]),
 		};
+		const logger = {
+			info: jest.fn(),
+			warn: jest.fn(),
+			error: jest.fn(),
+		};
 
 		registerTelegramCommands({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			allowedChatIds,
 			jobSearchPremiseAnalyze: jobSearchPremiseAnalyze as never,
 			jobSearchFinderAll: jobSearchFinderAll as never,
@@ -90,6 +96,7 @@ describe("registerTelegramCommands", () => {
 			userProfileFinder,
 			userProfileDelete,
 			deadLetterQueue,
+			logger,
 		};
 	}
 

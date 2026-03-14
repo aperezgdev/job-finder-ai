@@ -1,4 +1,5 @@
 import type TelegramBot from "node-telegram-bot-api";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { UserProfileFinder } from "../../../context/UserProfile/application/UserProfileFinder";
 import type { UserProfileUpsert } from "../../../context/UserProfile/application/UserProfileUpsert";
 import {
@@ -23,11 +24,16 @@ export class SetProfileCommentCommand extends TelegramCommandWithArgs<{
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			userProfileFinder: UserProfileFinder;
 			userProfileUpsert: UserProfileUpsert;
 		},
 	) {
-		super(SET_PROFILE_COMMENT_COMMAND, dependencies.telegramBot);
+		super(
+			SET_PROFILE_COMMENT_COMMAND,
+			dependencies.telegramBot,
+			dependencies.logger,
+		);
 	}
 
 	protected commandTemplate(): string {

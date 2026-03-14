@@ -1,4 +1,5 @@
 import type TelegramBot from "node-telegram-bot-api";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import { TelegramCommand, type TelegramCommandRunContext } from "./command";
 
 const HELP_COMMAND = /^\/help(?:@\w+)?\b/i;
@@ -50,8 +51,11 @@ const HELP_MESSAGE = [
 ].join("\n");
 
 export class HelpCommand extends TelegramCommand {
-	constructor(telegramBot: TelegramBot) {
-		super(HELP_COMMAND, telegramBot);
+	constructor(dependencies: {
+		telegramBot: TelegramBot;
+		logger: Logger;
+	}) {
+		super(HELP_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {

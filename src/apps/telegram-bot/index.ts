@@ -28,6 +28,7 @@ async function main(): Promise<void> {
 
 	registerTelegramCommands({
 		telegramBot,
+		logger,
 		allowedChatIds: config.telegram.allowedChatIds,
 		jobSearchPremiseAnalyze,
 		jobSearchFinderAll,

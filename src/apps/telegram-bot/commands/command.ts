@@ -1,5 +1,18 @@
 import type TelegramBot from "node-telegram-bot-api";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import { ValidationError } from "../../../context/Shared/domain/ValidationError";
+
+function normalizeError(error: unknown): Record<string, unknown> {
+	if (error instanceof Error) {
+		return {
+			name: error.name,
+			message: error.message,
+			stack: error.stack,
+		};
+	}
+
+	return { error };
+}
 
 export type TelegramCommandExecution = {
 	chatId: number;
@@ -68,6 +81,7 @@ export abstract class TelegramCommand {
 	constructor(
 		protected readonly commandPattern: RegExp,
 		protected readonly telegramBot: TelegramBot,
+		protected readonly logger: Logger,
 	) {}
 
 	matches(text: string): boolean {
@@ -106,8 +120,16 @@ export abstract class TelegramCommand {
 
 	protected async onExecutionError({
 		chatId,
+		text,
 		error,
 	}: TelegramCommandErrorContext): Promise<void> {
+		this.logger.error("TelegramCommand - execute - Error", {
+			command: this.constructor.name,
+			chatId,
+			text,
+			error: normalizeError(error),
+		});
+
 		const message =
 			error instanceof ValidationError
 				? error.message

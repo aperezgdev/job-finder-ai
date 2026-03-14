@@ -2,6 +2,7 @@ import type TelegramBot from "node-telegram-bot-api";
 import type { JobScoredFinderAll } from "../../../context/JobScored/application/JobScoredFinderAll";
 import type { JobScoredFinderBySearch } from "../../../context/JobScored/application/JobScoredFinderBySearch";
 import type { JobScoredSummary } from "../../../context/JobScored/domain/JobScoredRepository";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import {
 	TelegramCommand,
 	TelegramCommandWithArgs,
@@ -72,10 +73,11 @@ export class ScoredCommand extends TelegramCommand {
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobScoredFinderAll: JobScoredFinderAll;
 		},
 	) {
-		super(SCORED_COMMAND, dependencies.telegramBot);
+		super(SCORED_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected async run({
@@ -114,10 +116,11 @@ export class ScoredSearchCommand extends TelegramCommandWithArgs<{
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobScoredFinderBySearch: JobScoredFinderBySearch;
 		},
 	) {
-		super(SCORED_SEARCH_COMMAND, dependencies.telegramBot);
+		super(SCORED_SEARCH_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected commandTemplate(): string {

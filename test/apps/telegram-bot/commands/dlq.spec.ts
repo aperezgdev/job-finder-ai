@@ -1,6 +1,12 @@
 import { DlqCommand } from "../../../../src/apps/telegram-bot/commands/dlq";
 
 describe("DlqCommand", () => {
+	const logger = {
+		info: jest.fn(),
+		warn: jest.fn(),
+		error: jest.fn(),
+	};
+
 	it("sends dead-letter jobs details when queue has entries", async () => {
 		const telegramBot = {
 			sendMessage: jest.fn().mockResolvedValue(undefined),
@@ -22,6 +28,7 @@ describe("DlqCommand", () => {
 		};
 		const command = new DlqCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			deadLetterQueue: deadLetterQueue as never,
 		});
 
@@ -53,6 +60,7 @@ describe("DlqCommand", () => {
 		};
 		const command = new DlqCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			deadLetterQueue: deadLetterQueue as never,
 		});
 
@@ -79,6 +87,7 @@ describe("DlqCommand", () => {
 		};
 		const command = new DlqCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			deadLetterQueue: deadLetterQueue as never,
 		});
 

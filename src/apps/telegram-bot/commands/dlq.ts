@@ -1,5 +1,6 @@
 import type { Queue } from "bullmq";
 import type TelegramBot from "node-telegram-bot-api";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { JobSearchScrapeDeadLetterPayload } from "../workers";
 import {
 	TelegramCommandWithArgs,
@@ -65,10 +66,11 @@ export class DlqCommand extends TelegramCommandWithArgs<{ limit: number }> {
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			deadLetterQueue: Queue<JobSearchScrapeDeadLetterPayload>;
 		},
 	) {
-		super(DLQ_COMMAND, dependencies.telegramBot);
+		super(DLQ_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected commandTemplate(): string {

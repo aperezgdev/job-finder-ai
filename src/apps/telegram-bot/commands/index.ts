@@ -6,6 +6,7 @@ import type { JobSearchDelete } from "../../../context/JobSearch/application/Job
 import type { JobSearchDeleteAll } from "../../../context/JobSearch/application/JobSearchDeleteAll";
 import type { JobSearchFinderAll } from "../../../context/JobSearch/application/JobSearchFinderAll";
 import type { JobSearchPremiseAnalyze } from "../../../context/JobSearch/application/JobSearchPremiseAnalyze";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { UserProfileDelete } from "../../../context/UserProfile/application/UserProfileDelete";
 import type { UserProfileFinder } from "../../../context/UserProfile/application/UserProfileFinder";
 import type { UserProfileUpsert } from "../../../context/UserProfile/application/UserProfileUpsert";
@@ -29,6 +30,7 @@ const PRIVATE_BOT_MESSAGE =
 
 export type TelegramCommandDependencies = {
 	telegramBot: TelegramBot;
+	logger: Logger;
 	allowedChatIds: string[];
 	jobSearchPremiseAnalyze: JobSearchPremiseAnalyze;
 	jobSearchFinderAll: JobSearchFinderAll;
@@ -44,6 +46,7 @@ export type TelegramCommandDependencies = {
 
 function buildTelegramCommands({
 	telegramBot,
+	logger,
 	jobSearchPremiseAnalyze,
 	jobSearchFinderAll,
 	jobSearchDelete,
@@ -56,21 +59,30 @@ function buildTelegramCommands({
 	deadLetterQueue,
 }: TelegramCommandDependencies): Array<TelegramCommand> {
 	return [
-		new HelpCommand(telegramBot),
+		new HelpCommand({ telegramBot, logger }),
 		new SetProfileCommentCommand({
 			telegramBot,
+			logger,
 			userProfileFinder,
 			userProfileUpsert,
 		}),
-		new ProfileCommand({ telegramBot, userProfileFinder }),
-		new DeleteProfileCommand({ telegramBot, userProfileDelete }),
-		new CreateSearchCommand({ telegramBot, jobSearchPremiseAnalyze }),
-		new SearchesCommand({ telegramBot, jobSearchFinderAll }),
-		new ScoredCommand({ telegramBot, jobScoredFinderAll }),
-		new ScoredSearchCommand({ telegramBot, jobScoredFinderBySearch }),
-		new DeleteSearchCommand({ telegramBot, jobSearchDelete }),
-		new DeleteAllSearchesCommand({ telegramBot, jobSearchDeleteAll }),
-		new DlqCommand({ telegramBot, deadLetterQueue }),
+		new ProfileCommand({ telegramBot, logger, userProfileFinder }),
+		new DeleteProfileCommand({ telegramBot, logger, userProfileDelete }),
+		new CreateSearchCommand({ telegramBot, logger, jobSearchPremiseAnalyze }),
+		new SearchesCommand({ telegramBot, logger, jobSearchFinderAll }),
+		new ScoredCommand({ telegramBot, logger, jobScoredFinderAll }),
+		new ScoredSearchCommand({
+			telegramBot,
+			logger,
+			jobScoredFinderBySearch,
+		}),
+		new DeleteSearchCommand({ telegramBot, logger, jobSearchDelete }),
+		new DeleteAllSearchesCommand({
+			telegramBot,
+			logger,
+			jobSearchDeleteAll,
+		}),
+		new DlqCommand({ telegramBot, logger, deadLetterQueue }),
 	];
 }
 

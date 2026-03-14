@@ -1,6 +1,7 @@
 import type TelegramBot from "node-telegram-bot-api";
 import type { JobSearchFinderAll } from "../../../context/JobSearch/application/JobSearchFinderAll";
 import type { JobSearch } from "../../../context/JobSearch/domain/JobSearch";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { TelegramCommandRunContext } from "./command";
 import { TelegramCommand } from "./command";
 
@@ -34,10 +35,11 @@ export class SearchesCommand extends TelegramCommand {
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobSearchFinderAll: JobSearchFinderAll;
 		},
 	) {
-		super(SEARCHES_COMMAND, dependencies.telegramBot);
+		super(SEARCHES_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {

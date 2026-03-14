@@ -1,5 +1,6 @@
 import type TelegramBot from "node-telegram-bot-api";
 import type { JobSearchPremiseAnalyze } from "../../../context/JobSearch/application/JobSearchPremiseAnalyze";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { TypedTelegramCommandRunContext } from "./command";
 import { TelegramCommandWithArgs } from "./command";
 
@@ -16,10 +17,11 @@ export class CreateSearchCommand extends TelegramCommandWithArgs<{
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			jobSearchPremiseAnalyze: JobSearchPremiseAnalyze;
 		},
 	) {
-		super(CREATE_SEARCH_COMMAND, dependencies.telegramBot);
+		super(CREATE_SEARCH_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected commandTemplate(): string {

@@ -1,4 +1,5 @@
 import type TelegramBot from "node-telegram-bot-api";
+import type { Logger } from "../../../context/Shared/domain/Logger";
 import type { UserProfileFinder } from "../../../context/UserProfile/application/UserProfileFinder";
 import { TelegramCommand, type TelegramCommandRunContext } from "./command";
 
@@ -37,10 +38,11 @@ export class ProfileCommand extends TelegramCommand {
 	constructor(
 		private readonly dependencies: {
 			telegramBot: TelegramBot;
+			logger: Logger;
 			userProfileFinder: UserProfileFinder;
 		},
 	) {
-		super(PROFILE_COMMAND, dependencies.telegramBot);
+		super(PROFILE_COMMAND, dependencies.telegramBot, dependencies.logger);
 	}
 
 	protected async run({ chatId }: TelegramCommandRunContext): Promise<void> {

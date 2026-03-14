@@ -4,6 +4,12 @@ import {
 } from "../../../../src/apps/telegram-bot/commands/delete-search";
 
 describe("DeleteSearchCommand", () => {
+	const logger = {
+		info: jest.fn(),
+		warn: jest.fn(),
+		error: jest.fn(),
+	};
+
 	it("extracts jobSearchId and deletes it", async () => {
 		const telegramBot = {
 			sendMessage: jest.fn().mockResolvedValue(undefined),
@@ -13,6 +19,7 @@ describe("DeleteSearchCommand", () => {
 		};
 		const command = new DeleteSearchCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			jobSearchDelete: jobSearchDelete as never,
 		});
 
@@ -40,6 +47,7 @@ describe("DeleteSearchCommand", () => {
 		};
 		const command = new DeleteSearchCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			jobSearchDelete: jobSearchDelete as never,
 		});
 
@@ -56,6 +64,12 @@ describe("DeleteSearchCommand", () => {
 });
 
 describe("DeleteAllSearchesCommand", () => {
+	const logger = {
+		info: jest.fn(),
+		warn: jest.fn(),
+		error: jest.fn(),
+	};
+
 	it("deletes all and reports count", async () => {
 		const telegramBot = {
 			sendMessage: jest.fn().mockResolvedValue(undefined),
@@ -65,6 +79,7 @@ describe("DeleteAllSearchesCommand", () => {
 		};
 		const command = new DeleteAllSearchesCommand({
 			telegramBot: telegramBot as never,
+			logger: logger as never,
 			jobSearchDeleteAll: jobSearchDeleteAll as never,
 		});
 
